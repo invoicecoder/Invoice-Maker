@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tuition Invoice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .invoice {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .header div {
+            text-align: right;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+        hr {
+            margin: 20px 0;
+        }
+        .details p {
+            margin: 5px 0;
+        }
+        .total {
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .buttons {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .buttons button, .buttons a {
+            padding: 10px 15px;
+            margin: 5px;
+            text-decoration: none;
+            color: white;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 4px;
+        }
+        .buttons a {
+            display: inline-block;
+        }
+        @media print {
+            .buttons {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice">
+        <!-- HEADER: Logo + Company Info -->
+        <div class="header">
+            <img src="{{ url_for('static', filename='logo.jpg') }}" width="120">
+            <div>
+                <h2>Classical Conversations</h2>
+                <p><strong>Director:</strong> {{ director_name }}</p>
+                <p><strong>Email:</strong> {{ director_email }}</p>
+
+                <p></p>
+            </div>
+        </div>
+
+        <hr>
+
+        <!-- TITLE -->
+        <h1>INVOICE</h1>
+
+        <hr>
+
+        <!-- INVOICE DETAILS -->
+        <div class="details">
+            <p><strong>Date:</strong> {{ date }}</p>
+            <p><strong>Student:</strong> {{ student_name }}</p>
+            <p><strong>Parent:</strong> {{ parent_name }}</p>
+            <p><strong>Tutor:</strong> {{ tutor_name}}</p>
+            <p><strong>Month:</strong> {{ month }}</p>
+            <p><strong>Application Fee:</strong> ${{ a_fee }}</p>
+            <p><strong>Supply Fee:</strong> ${{ s_fee }} </p>
+            <p><strong>Tuition Fee:</strong> ${{ t_fee}} </p>
+            <p><strong>Facility Fee:</strong> ${{ f_fee}}</p>
+        </div>
+
+        <div class="total">
+            Total Due: ${{total}}
+        </div>
+
+        <!-- BUTTONS -->
+        <div class="buttons">
+            <button onclick="window.print()">Print Invoice</button>
+            <a href="/">Create Another</a>
+        </div>
+    </div>
+</body>
+</html>
