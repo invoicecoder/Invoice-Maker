@@ -8,10 +8,15 @@ app = Flask(__name__)
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        if request.form['password'] == "yourpassword":
+        password = request.form['password']
+
+        if password == "ccinvoice":   # Change this!
             session['logged_in'] = True
             return redirect(url_for('index'))
-    return "Login Page"
+        else:
+            return "Wrong password"
+
+    return render_template('login.html')
 
 
 
@@ -56,6 +61,7 @@ def index():
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
 
 
 
