@@ -15,7 +15,7 @@ def login():
         password = request.form['password']
 
         # Simple hardcoded login (you can change this)
-        if username == "admin" and password == "1234":
+        if username == "admin" and password == "SECRET_KEY":
             session['user'] = username
             return redirect(url_for('index'))
         else:
@@ -69,5 +69,6 @@ def index():
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)
+
 
 
