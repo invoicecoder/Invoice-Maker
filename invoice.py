@@ -4,35 +4,13 @@ import random
 import os
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY")
 
 
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-
-        # Simple hardcoded login (you can change this)
-        if username == "admin" and password == SECRET_KEY:
-            session['user'] = username
-            return redirect(url_for('index'))
-        else:
-            return render_template('login.html', error="Invalid credentials")
-
-    return render_template('login.html')
-@app.route('/logout')
-def logout():
-    session.pop('user', None)
-    return redirect(url_for('login'))
 
 
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    if 'user' not in session:
-        return redirect(url_for('login'))
     if request.method == 'POST':
         student_name = request.form['student_name']
         parent_name = request.form['parent_name']
@@ -69,6 +47,7 @@ def index():
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
 
 
 
