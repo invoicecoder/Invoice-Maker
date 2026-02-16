@@ -7,6 +7,10 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY")
 REAL_PASSWORD = os.environ.get("APP_PASSWORD")
 
+@app.route("/health")
+def health():
+    return "OK", 200
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -64,6 +68,7 @@ def index():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
 
 
 
