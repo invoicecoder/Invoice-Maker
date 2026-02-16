@@ -24,7 +24,10 @@ def login():
             return "Wrong password"
 
     return render_template('login.html')
-
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    return redirect(url_for('login'))
 
 
 
@@ -69,6 +72,7 @@ def index():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
 
 
 
