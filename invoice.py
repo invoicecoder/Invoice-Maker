@@ -5,7 +5,6 @@ import os
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY")
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 REAL_PASSWORD = os.environ.get("APP_PASSWORD")
 
 @app.route("/health")
@@ -19,7 +18,6 @@ def login():
 
         if password == REAL_PASSWORD:   # Change this!
             session['logged_in'] = True
-            session.permanent = True
             return redirect(url_for('index'))
         else:
             return "Wrong password"
@@ -73,6 +71,7 @@ def index():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
 
 
 
