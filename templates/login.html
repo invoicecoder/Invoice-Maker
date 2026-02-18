@@ -66,6 +66,10 @@
 <body>
     <div class="login-container">
         <h2>Enter Password</h2>
+        {% if error %}
+        <div class="error-message">{{ error }}</div>
+        {% endif %}
+
         <form method="POST">
             <input type="password" name="password" placeholder="Password" required>
             <button type="submit">Login</button>
