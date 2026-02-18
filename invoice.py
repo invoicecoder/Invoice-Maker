@@ -39,22 +39,7 @@ def index():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
     if request.method == 'POST':
-        student_name = request.form['student_name']
-        parent_name = request.form['parent_name']
-        tutor_name = request.form['tutor_name']
-        director_name = request.form['director_name']
-        director_email = request.form['director_email']
-        month = request.form['month']
-        a_fee = int(request.form.get('a_fee', 0) or 0)
-        s_fee = int(request.form.get('s_fee', 0) or 0)
-        f_fee = int(request.form.get('f_fee', 0) or 0)
-        t_fee = int(request.form.get('t_fee', 0) or 0)
-
-        total = a_fee + s_fee + f_fee + t_fee
-
-        date = datetime.now().strftime("%Y-%m-%d")
-
-        session['invoice_data'] = {
+    session['invoice_data'] = {
     "student_name": student_name,
     "parent_name": parent_name,
     "tutor_name": tutor_name,
@@ -72,7 +57,7 @@ def index():
     return render_template("loading.html", redirect_url=url_for('show_invoice'))
 
 
-    return render_template('index.html')
+return render_template('index.html')
 @app.route('/invoice')
 def show_invoice():
     data = session.get('invoice_data')
@@ -85,6 +70,7 @@ def show_invoice():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
 
 
 
