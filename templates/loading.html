@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Loading...</title>
+    <style>
+        body {
+            background: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            flex-direction: column;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid #cce0ff;
+            border-top: 6px solid #2470ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        h2 {
+            color: #2470ff;
+        }
+    </style>
+
+    <script>
+        setTimeout(function(){
+            window.location.href = "{{ redirect_url }}";
+        }, 3000);
+    </script>
+</head>
+<body>
+    <div class="spinner"></div>
+    <h2>Please wait...</h2>
+</body>
+</html>
