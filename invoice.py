@@ -13,6 +13,8 @@ def health():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if session.get('logged in'):
+        return redirect(url_for('index'))
     error = None
     if request.method == 'POST':
         password = request.form['password']
@@ -83,6 +85,7 @@ def show_invoice():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
 
 
 
