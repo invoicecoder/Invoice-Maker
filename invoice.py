@@ -10,6 +10,14 @@ REAL_PASSWORD = os.environ.get("APP_PASSWORD")
 @app.route("/health")
 def health():
     return "OK", 200
+@app.route('/menu')
+def menu():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+
+    user_name = session.get('user_name', "User")
+    return render_template('menu.html', user_name=user_name)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -85,6 +93,7 @@ def show_invoice():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
 
 
 
