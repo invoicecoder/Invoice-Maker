@@ -52,27 +52,38 @@ def index():
 
         date = datetime.now().strftime("%Y-%m-%d")
 
-        return render_template('invoice.html',
-                               student_name=student_name,
-                               parent_name=parent_name,
-                               tutor_name=tutor_name,
-                               director_name=director_name,
-                               director_email=director_email,
-                               month=month,
-                               a_fee=a_fee,
-                               s_fee=s_fee,
-                               f_fee=f_fee,
-                               t_fee=t_fee,
-                               date=date,
-                               total=total)
+        session['invoice_data'] = {
+    "student_name": student_name,
+    "parent_name": parent_name,
+    "tutor_name": tutor_name,
+    "director_name": director_name,
+    "director_email": director_email,
+    "month": month,
+    "a_fee": a_fee,
+    "s_fee": s_fee,
+    "f_fee": f_fee,
+    "t_fee": t_fee,
+    "date": date,
+    "total": total
+}
+
+    return render_template("loading.html", redirect_url=url_for('show_invoice'))
 
 
     return render_template('index.html')
+@app.route('/invoice')
+def show_invoice():
+    data = session.get('invoice_data')
+    if not data:
+        return redirect(url_for('index'))
+    return render_template('invoice.html', **data)
+
 # ... rest of your code ...
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
 
 
 
