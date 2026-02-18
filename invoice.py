@@ -6,6 +6,10 @@ import os
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY")
 REAL_PASSWORD = os.environ.get("APP_PASSWORD")
+def log_login(name):
+    log_path = "login_logs.txt"
+    with open(log_path, "a") as file:
+        file.write(f"{name} logged in at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
 
 @app.route("/health")
 def health():
@@ -31,6 +35,7 @@ def login():
         if password == REAL_PASSWORD:   # Change this!
             session['logged_in'] = True
             session['user_name'] = name
+            log_login(name)
             return render_template("loading.html", redirect_url=url_for('menu'))
 
         else:
@@ -93,6 +98,7 @@ def show_invoice():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
 
 
 
