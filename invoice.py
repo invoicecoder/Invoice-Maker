@@ -17,11 +17,13 @@ def login():
         return redirect(url_for('index'))
     error = None
     if request.method == 'POST':
+        name = request.form['name']
         password = request.form['password']
 
         if password == REAL_PASSWORD:   # Change this!
             session['logged_in'] = True
-            return render_template("loading.html", redirect_url=url_for('index'))
+            session['user_name'] = name
+            return render_template("loading.html", redirect_url=url_for('menu'))
 
         else:
              error = "Incorrect password. Please try again."
@@ -83,6 +85,7 @@ def show_invoice():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
 
 
 
