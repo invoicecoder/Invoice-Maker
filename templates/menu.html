@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f4f8;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 500px;
+            margin: 80px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 7px 18px rgba(0,0,0,0.12);
+        }
+        h1 {
+            color: #2470ff;
+            margin-bottom: 25px;
+        }
+        button, a {
+            display: block;
+            margin: 12px auto;
+            width: 80%;
+            padding: 14px;
+            background: #2470ff;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1em;
+            cursor: pointer;
+        }
+        button:hover, a:hover {
+            background: #1458c8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome, {{ user_name }}!</h1>
+
+        <a href="{{ url_for('index') }}">Invoice Maker</a>
+        <!-- Add more buttons here later -->
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+</body>
+</html>
