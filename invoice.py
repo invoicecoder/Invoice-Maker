@@ -8,6 +8,11 @@ import os
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY")
 REAL_PASSWORD = os.environ.get("APP_PASSWORD")
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')  # Use Render's Postgres
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Initialize SQLAlchemy
+db = SQLAlchemy(app)
 
 @app.route("/health")
 def health():
@@ -101,9 +106,12 @@ def debug():
         "APP_PASSWORD_exists": REAL_PASSWORD is not None,
         "SECRET_KEY_exists": app.secret_key is not None
     }
+with app.app_context():
+    db.create_all()
 
 
 # ... rest of your code ...
+
 
 
 
