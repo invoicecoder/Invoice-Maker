@@ -2,21 +2,111 @@
 <html>
 <head>
     <title>Register</title>
+    <style>
+        body {
+            background: #f0f4f8;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .login-container {
+            max-width: 350px;
+            margin: 80px auto;
+            background: #fff;
+            padding: 32px 30px 24px 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.10), 0 1.5px 4px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .login-container h2 {
+            margin-bottom: 24px;
+            font-weight: 600;
+            color: #2470ff;
+            letter-spacing: 0.03em;
+        }
+        .login-container form {
+            width: 100%;
+        }
+        .login-container input[type="text"],
+        .login-container input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d4d4d4;
+            border-radius: 7px;
+            font-size: 1.08em;
+            margin-bottom: 18px;
+            margin-top: 2px;
+            transition: border-color 0.3s;
+            background: #f7fafd;
+        }
+        .login-container input[type="text"]:focus,
+        .login-container input[type="password"]:focus {
+            border-color: #2470ff;
+            outline: none;
+            background: #fff;
+        }
+        .login-container button {
+            width: 100%;
+            background: #2470ff;
+            color: #fff;
+            padding: 12px;
+            border: none;
+            font-size: 1.08em;
+            border-radius: 7px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            box-shadow: 0 2px 8px rgba(36,112,255,0.08);
+        }
+        .login-container button:hover {
+            background: #1458c8;
+        }
+        .error-message {
+            width: 100%;
+            background: #ffe5e5;
+            color: #d8000c;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 0.95em;
+            border: 1px solid #ffb3b3;
+        }
+        .switch-link {
+            margin-top: 18px;
+            font-size: 0.95em;
+        }
+        .switch-link a {
+            color: #2470ff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .switch-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-<h2>Register</h2>
+    <div class="login-container">
+        <h2>Create Account</h2>
 
-{% if error %}
-<p style="color:red">{{ error }}</p>
-{% endif %}
+        {% if error %}
+        <div class="error-message">{{ error }}</div>
+        {% endif %}
 
-<form method="POST">
-    Username: <input type="text" name="username" required><br>
-    Password: <input type="password" name="password" required><br>
-    App Password: <input type="password" name="app_password" required><br>
-    <button type="submit">Register</button>
-</form>
+        <form method="POST">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <input type="password" name="app_password" placeholder="App Password" required>
+            <button type="submit">Register</button>
+        </form>
 
-<p>Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+        <div class="switch-link">
+            Already have an account? 
+            <a href="{{ url_for('login') }}">Login here</a>
+        </div>
+    </div>
 </body>
 </html>
