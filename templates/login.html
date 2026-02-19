@@ -88,6 +88,18 @@
             font-size: 0.95em;
             border: 1px solid #ffb3b3;
         }
+        .switch-link {
+            margin-top: 18px;
+            font-size: 0.95em;
+        }
+        .switch-link a {
+            color: #2470ff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .switch-link a:hover {
+            text-decoration: underline;
+        }
 
     </style>
 </head>
@@ -103,6 +115,10 @@
             <input type="password" name="password" placeholder="Password" required>
             <button type="submit">Login</button>
         </form>
+        <div class="switch-link">
+            Don't have an account yet?
+            <a href="{{ url_for('register') }}">Create Account here</a>
+        </div>
     </div>
 </body>
 </html>
