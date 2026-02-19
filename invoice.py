@@ -73,22 +73,29 @@ def menu():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    # If already logged in, redirect to menu
     if session.get('logged_in'):
-        return redirect(url_for('index'))
+        return redirect(url_for('menu'))
+
     error = None
     if request.method == 'POST':
-        name = request.form['name']
+        username = request.form['name']   # form field for username
         password = request.form['password']
 
-        if password == REAL_PASSWORD:   # Change this!
-            session['logged_in'] = True
-            session['user_name'] = name
-            return render_template("loading.html", redirect_url=url_for('menu'))
+        # Look up user in Postgres
+        user = User.query.filter_by(username=username).first()
 
+        if user and user.check_password(password):
+            # Login successful
+            session['logged_in'] = True
+            session['user_name'] = username
+            return render_template("loading.html", redirect_url=url_for('menu'))
         else:
-             error = "Incorrect password. Please try again."
+            # Login failed
+            error = "Incorrect username or password."
 
     return render_template('login.html', error=error)
+
 @app.route('/logout')
 def logout():
     session.pop('logged_in', None)
@@ -150,6 +157,7 @@ with app.app_context():
 
 
 # ... rest of your code ...
+
 
 
 
