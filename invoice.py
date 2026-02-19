@@ -156,11 +156,11 @@ def debug():
         "APP_PASSWORD_exists": REAL_PASSWORD is not None,
         "SECRET_KEY_exists": app.secret_key is not None
     }
-with app.app_context():
-    db.create_all()
+
 
 
 # ... rest of your code ...
+
 
 
 
