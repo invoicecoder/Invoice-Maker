@@ -87,12 +87,20 @@ def show_invoice():
     if not data:
         return redirect(url_for('index'))
     return render_template('invoice.html', **data)
+@app.route("/debug")
+def debug():
+    return {
+        "APP_PASSWORD_exists": REAL_PASSWORD is not None,
+        "SECRET_KEY_exists": app.secret_key is not None
+    }
+
 
 # ... rest of your code ...
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
 
 
 
