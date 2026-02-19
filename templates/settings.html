@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Settings</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+            text-align: center;
+            max-width: 500px;
+        }
+        h1 {
+            color: #2470ff;
+            margin-bottom: 20px;
+        }
+        p {
+            color: #555;
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 25px;
+            background: #2470ff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+        a:hover {
+            background: #1458c8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Settings</h1>
+        <p>This is your settings page. You can add profile, password, or app preferences here.</p>
+        <a href="{{ url_for('menu') }}">Back to Dashboard</a>
+    </div>
+</body>
+</html>
