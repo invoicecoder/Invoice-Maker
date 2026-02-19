@@ -61,8 +61,11 @@
             flex-wrap: wrap;
             gap: 20px;
         }
-        .card {
+        .card-link {
             flex: 1 1 200px;
+            text-decoration: none; /* Remove link underline */
+        }
+        .card {
             background: #fff;
             padding: 25px;
             border-radius: 12px;
@@ -96,19 +99,31 @@
     <div class="main">
         <h1>Dashboard</h1>
         <div class="cards">
-            <div class="card">
-                <h3>Invoice Maker</h3>
-                <p>Create and manage invoices easily.</p>
-            </div>
-            <div class="card">
-                <h3>Reports</h3>
-                <p>View detailed monthly and annual reports.</p>
-            </div>
-            <div class="card">
-                <h3>Settings</h3>
-                <p>Update your preferences and account details.</p>
-            </div>
-            <!-- Add more cards as needed -->
+            <a href="{{ url_for('index') }}" class="card-link">
+                <div class="card">
+                    <h3>Invoice Maker</h3>
+                    <p>Create and manage invoices easily.</p>
+                </div>
+            </a>
+            <a href="{{ url_for('index') }}" class="card-link">
+                <div class="card">
+                    <h3>Reports</h3>
+                    <p>View detailed monthly and annual reports.</p>
+                </div>
+            </a>
+             <a href="{{ url_for('settings') }}" class="card-link">
+                <div class="card">
+                    <h3>Settings</h3>
+                    <p>Update preferences and account details.</p>
+                </div>
+            </a>
+            <a href="{{ url_for('logout') }}" class="card-link">
+                <div class="card">
+                    <h3>Logout</h3>
+                    <p>Sign out of your account securely.</p>
+                </div>
+            </a>
+            <!-- Add more clickable cards as needed -->
         </div>
     </div>
 </body>
