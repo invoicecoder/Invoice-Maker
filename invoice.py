@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from datetime import datetime, timedelta
 import random
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
 import os
 
 app = Flask(__name__)
@@ -102,6 +104,7 @@ def debug():
 
 
 # ... rest of your code ...
+
 
 
 
