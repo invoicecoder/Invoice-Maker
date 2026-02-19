@@ -14,6 +14,20 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Initialize SQLAlchemy
 db = SQLAlchemy(app)
 
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    password_hash = db.Column(db.String(200), nullable=False)
+
+    # Set password (hash it for security)
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    # Check password
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+
 @app.route("/health")
 def health():
     return "OK", 200
@@ -111,6 +125,7 @@ with app.app_context():
 
 
 # ... rest of your code ...
+
 
 
 
