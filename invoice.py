@@ -38,7 +38,7 @@ def register():
         app_password = request.form['app_password']  # Added field
 
         # Check shared app password
-        if app_password != APP_PASSWORD:
+        if app_password != REAL_PASSWORD:
             error = "Invalid app password."
         # Check if username exists
         elif User.query.filter_by(username=username).first():
@@ -150,6 +150,7 @@ with app.app_context():
 
 
 # ... rest of your code ...
+
 
 
 
