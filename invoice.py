@@ -69,7 +69,7 @@ def settings():
 @app.route('/menu')
 def menu():
     if not session.get('logged_in'):
-        return redirect(url_for('login'))
+        return redirect(url_for('register'))
 
     user_name = session.get('user_name', "User")
     return render_template('menu.html', user_name=user_name)
@@ -110,7 +110,7 @@ def logout():
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if not session.get('logged_in'):
-        return redirect(url_for('login'))
+        return redirect(url_for('register'))
     if request.method == 'POST':
         student_name = request.form['student_name']
         parent_name = request.form['parent_name']
@@ -161,6 +161,7 @@ with app.app_context():
 
 
 # ... rest of your code ...
+
 
 
 
