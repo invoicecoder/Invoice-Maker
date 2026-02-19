@@ -27,6 +27,30 @@ class User(db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    # If already logged in, redirect to menu
+    if session.get('logged_in'):
+        return redirect(url_for('menu'))
+    
+    error = None
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        # Check if the username already exists
+        if User.query.filter_by(username=username).first():
+            error = "Username already exists."
+        else:
+            # Create new user and hash the password
+            user = User(username=username)
+            user.set_password(password)
+            db.session.add(user)
+            db.session.commit()
+            # After registration, redirect to login
+            return render_template("loading.html", redirect_url=url_for('login'))
+
+    return render_template('register.html', error=error)
 
 @app.route("/health")
 def health():
@@ -125,6 +149,7 @@ with app.app_context():
 
 
 # ... rest of your code ...
+
 
 
 
