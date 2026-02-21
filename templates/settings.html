@@ -42,10 +42,36 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Settings</h1>
-        <p>This is your settings page. You can add profile, password, or app preferences here.</p>
-        <a href="{{ url_for('menu') }}">Back to Dashboard</a>
-    </div>
+    <h1>Settings</h1>
+
+    <p>Logged in as: <strong>{{ current_username }}</strong></p>
+
+    {% if error %}
+    <div class="message error">{{ error }}</div>
+    {% endif %}
+
+    {% if success %}
+    <div class="message success">{{ success }}</div>
+    {% endif %}
+
+    <!-- Change Username -->
+    <h3>Change Username</h3>
+    <form method="POST">
+        <input type="text" name="new_username" placeholder="New Username" required>
+        <button type="submit">Update Username</button>
+    </form>
+
+    <hr style="margin:25px 0;">
+
+    <!-- Change Password -->
+    <h3>Change Password</h3>
+    <form method="POST">
+        <input type="password" name="current_password" placeholder="Current Password" required>
+        <input type="password" name="new_password" placeholder="New Password" required>
+        <input type="password" name="confirm_password" placeholder="Confirm New Password" required>
+        <button type="submit">Update Password</button>
+    </form>
+
+    <a href="{{ url_for('menu') }}">Back to Dashboard</a>
 </body>
 </html>
