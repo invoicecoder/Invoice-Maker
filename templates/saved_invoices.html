@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Saved Invoices</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f9;
+            padding: 40px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background: #2470ff;
+            color: white;
+        }
+        tr:hover {
+            background: #f1f1f1;
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #2470ff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Saved Invoices</h1>
+
+<table>
+    <tr>
+        <th>Date</th>
+        <th>Student</th>
+        <th>Month</th>
+        <th>Total</th>
+    </tr>
+
+    {% for invoice in invoices %}
+    <tr>
+        <td>{{ invoice.date }}</td>
+        <td>{{ invoice.student_name }}</td>
+        <td>{{ invoice.month }}</td>
+        <td>${{ invoice.total }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<a href="{{ url_for('menu') }}">Back to Dashboard</a>
+
+</body>
+</html>
