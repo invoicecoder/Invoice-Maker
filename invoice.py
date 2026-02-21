@@ -220,7 +220,7 @@ def index():
             "total": total
         }
 
-    return render_template("loading.html", redirect_url=url_for('show_invoice'))
+        return render_template("loading.html", redirect_url=url_for('show_invoice'))
 
 
     return render_template('index.html')
@@ -251,6 +251,7 @@ if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
 
 # ... rest of your code ...
+
 
 
 
