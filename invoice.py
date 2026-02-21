@@ -30,6 +30,25 @@ class User(db.Model):
     # Check password
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+class Invoice(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    student_name = db.Column(db.String(100))
+    parent_name = db.Column(db.String(100))
+    tutor_name = db.Column(db.String(100))
+    director_name = db.Column(db.String(100))
+    director_email = db.Column(db.String(100))
+    month = db.Column(db.String(50))
+
+    a_fee = db.Column(db.Integer)
+    s_fee = db.Column(db.Integer)
+    f_fee = db.Column(db.Integer)
+    t_fee = db.Column(db.Integer)
+    total = db.Column(db.Integer)
+
+    date = db.Column(db.String(20))
 @app.route('/settings', methods=['GET', 'POST'])
 def settings():
     if not session.get('logged_in'):
@@ -201,6 +220,7 @@ def debug():
 
 
 # ... rest of your code ...
+
 
 
 
