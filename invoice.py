@@ -106,11 +106,6 @@ def register():
 @app.route("/health")
 def health():
     return "OK", 200
-@app.route('/settings', methods=['GET', 'POST'])
-def settings():
-    if not session.get('logged_in'):
-        return redirect(url_for('login'))
-    return render_template('settings.html')
 
 @app.route('/menu')
 def menu():
@@ -206,6 +201,7 @@ def debug():
 
 
 # ... rest of your code ...
+
 
 
 
