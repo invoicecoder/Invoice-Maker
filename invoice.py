@@ -185,6 +185,26 @@ def index():
 
         total = a_fee + s_fee + f_fee + t_fee
         date = datetime.now().strftime("%Y-%m-%d")
+        user = User.query.filter_by(username=session['user_name']).first()
+
+        new_invoice = Invoice(
+        user_id=user.id,
+        student_name=student_name,
+        parent_name=parent_name,
+        tutor_name=tutor_name,
+        director_name=director_name,
+        director_email=director_email,
+        month=month,
+        a_fee=a_fee,
+        s_fee=s_fee,
+        f_fee=f_fee,
+        t_fee=t_fee,
+        total=total,
+        date=date
+    )
+
+    db.session.add(new_invoice)
+    db.session.commit()
         session['invoice_data'] = {
             "student_name": student_name,
             "parent_name": parent_name,
@@ -216,10 +236,19 @@ def debug():
         "APP_PASSWORD_exists": REAL_PASSWORD is not None,
         "SECRET_KEY_exists": app.secret_key is not None
     }
+@app.route('/invoices')
+def invoices():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
 
+    user = User.query.filter_by(username=session['user_name']).first()
+    all_invoices = Invoice.query.filter_by(user_id=user.id).order_by(Invoice.id.desc()).all()
+
+    return render_template('saved_invoices.html', invoices=all_invoices)
 
 
 # ... rest of your code ...
+
 
 
 
