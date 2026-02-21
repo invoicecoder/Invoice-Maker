@@ -19,13 +19,46 @@
             box-shadow: 0 6px 15px rgba(0,0,0,0.08);
             text-align: center;
             max-width: 500px;
+            width: 100%;
         }
         h1 {
             color: #2470ff;
             margin-bottom: 20px;
         }
+        h3 {
+            margin-top: 20px;
+        }
         p {
             color: #555;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #2470ff;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #1458c8;
+        }
+        .message {
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+        }
+        .success {
+            color: green;
         }
         a {
             display: inline-block;
@@ -39,39 +72,47 @@
         a:hover {
             background: #1458c8;
         }
+        hr {
+            margin: 25px 0;
+            border: none;
+            border-top: 1px solid #eee;
+        }
     </style>
 </head>
 <body>
-    <h1>Settings</h1>
+    <div class="container">
+        <h1>Settings</h1>
 
-    <p>Logged in as: <strong>{{ current_username }}</strong></p>
+        <p>Logged in as: <strong>{{ current_username }}</strong></p>
 
-    {% if error %}
-    <div class="message error">{{ error }}</div>
-    {% endif %}
+        {% if error %}
+            <div class="message error">{{ error }}</div>
+        {% endif %}
 
-    {% if success %}
-    <div class="message success">{{ success }}</div>
-    {% endif %}
+        {% if success %}
+            <div class="message success">{{ success }}</div>
+        {% endif %}
 
-    <!-- Change Username -->
-    <h3>Change Username</h3>
-    <form method="POST">
-        <input type="text" name="new_username" placeholder="New Username" required>
-        <button type="submit">Update Username</button>
-    </form>
+        <!-- Change Username -->
+        <h3>Change Username</h3>
+        <form method="POST">
+            <input type="text" name="new_username" placeholder="New Username" required>
+            <button type="submit">Update Username</button>
+        </form>
 
-    <hr style="margin:25px 0;">
+        <hr>
 
-    <!-- Change Password -->
-    <h3>Change Password</h3>
-    <form method="POST">
-        <input type="password" name="current_password" placeholder="Current Password" required>
-        <input type="password" name="new_password" placeholder="New Password" required>
-        <input type="password" name="confirm_password" placeholder="Confirm New Password" required>
-        <button type="submit">Update Password</button>
-    </form>
+        <!-- Change Password -->
+        <h3>Change Password</h3>
+        <form method="POST">
+            <input type="password" name="current_password" placeholder="Current Password" required>
+            <input type="password" name="new_password" placeholder="New Password" required>
+            <input type="password" name="confirm_password" placeholder="Confirm New Password" required>
+            <button type="submit">Update Password</button>
+        </form>
 
-    <a href="{{ url_for('menu') }}">Back to Dashboard</a>
+        <a href="{{ url_for('menu') }}">Back to Dashboard</a>
+    </div>
 </body>
 </html>
+        
