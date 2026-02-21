@@ -245,9 +245,13 @@ def invoices():
     all_invoices = Invoice.query.filter_by(user_id=user.id).order_by(Invoice.id.desc()).all()
 
     return render_template('saved_invoices.html', invoices=all_invoices)
-
+if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
 
 # ... rest of your code ...
+
 
 
 
