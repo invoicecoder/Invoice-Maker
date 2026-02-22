@@ -134,7 +134,7 @@ def register():
 def health():
     return "OK", 200
 
-@app.route('/')
+@app.route('/menu')
 def menu():
     if not session.get('logged_in'):
         return redirect(url_for('register'))
@@ -143,7 +143,7 @@ def menu():
     return render_template('menu.html', user_name=user_name)
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def login():
     # If already logged in, redirect to menu
     if session.get('logged_in'):
@@ -257,6 +257,7 @@ with app.app_context():      # optional, only if old tables exist
     db.create_all()
 
 # ... rest of your code ...
+
 
 
 
