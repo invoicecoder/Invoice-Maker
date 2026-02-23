@@ -214,6 +214,7 @@ def login():
             session['logged_in'] = True
             session['user_name'] = user.username
             session['user_id'] = user.id
+            session['is_admin'] = user.is_admin
             if user.is_admin:
                 return render_template("loading.html", redirect_url=url_for('admin_users'))
             else:
@@ -318,6 +319,7 @@ with app.app_context():      # optional, only if old tables exist
         admin.set_password("Josiah")  # change this to a strong password
         db.session.add(admin)
         db.session.commit()
+
 
 
 
