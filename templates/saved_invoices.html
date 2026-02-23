@@ -64,6 +64,14 @@
         <td>{{ invoice.t_fee }}</td>
         <td>{{ invoice.a_fee }}</td>
         <td>${{ invoice.total }}</td>
+        <td>
+            <form method="POST" action="{{ url_for('delete_invoice', invoice_id=invoice.id) }}">
+                <button type="submit" class="delete-btn"
+                        onclick="return confirm('Are you sure you want to delete this invoice?');">
+                    Delete
+                </button>
+            </form>
+        </td>
     </tr>
     {% endfor %}
 </table>
