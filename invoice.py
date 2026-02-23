@@ -103,6 +103,22 @@ def settings():
                 success = "Password updated successfully!"
 
     return render_template('settings.html', error=error, success=success, current_username=user.username)
+@app.route('/delete_invoice/<int:invoice_id>', methods=['POST'])
+def delete_invoice(invoice_id):
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+
+    user = User.query.filter_by(username=session['user_name']).first()
+    if not user:
+        return redirect(url_for('login'))
+
+    invoice = Invoice.query.filter_by(id=invoice_id, user_id=user.id).first()
+
+    if invoice:
+        db.session.delete(invoice)
+        db.session.commit()
+
+    return redirect(url_for('invoices'))
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if session.get('logged_in'):
@@ -253,6 +269,7 @@ with app.app_context():      # optional, only if old tables exist
     db.create_all()
 
 # ... rest of your code ...
+
 
 
 
