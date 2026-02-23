@@ -93,21 +93,21 @@
         <h2>Hello, {{ user_name }} (Admin)</h2>
         <a href="{{ url_for('logout') }}">Logout</a>
         <!-- Admin-specific links -->
-        <a href="{{ url_for('all_users') }}">All Users</a>
-        <a href="{{ url_for('all_invoices') }}">All Invoices</a>
+        <a href="{{ url_for('admin_users') }}">All Users</a>
+        <a href="{{ url_for('admin_invoices') }}">All Invoices</a>
         <!-- Optional: add more admin links -->
     </div>
 
     <div class="main">
         <h1>Admin Dashboard</h1>
         <div class="cards">
-            <a href="{{ url_for('all_users') }}" class="card-link">
+            <a href="{{ url_for('admin_users') }}" class="card-link">
                 <div class="card">
                     <h3>All Users</h3>
                     <p>View and manage all user accounts.</p>
                 </div>
             </a>
-            <a href="{{ url_for('all_invoices') }}" class="card-link">
+            <a href="{{ url_for('admin_invoices') }}" class="card-link">
                 <div class="card">
                     <h3>All Invoices</h3>
                     <p>View invoices from all users.</p>
