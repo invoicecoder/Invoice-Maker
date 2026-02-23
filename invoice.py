@@ -136,6 +136,8 @@ def register():
         # Check if username exists
         elif User.query.filter_by(username=username).first():
             error = "Username already exists."
+        elif len(password) < 6:
+            error = "Password must be at least 6 characters."
         else:
             # Create user
             user = User(username=username)
@@ -194,7 +196,7 @@ def logout():
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     if not session.get('logged_in'):
-        return redirect(url_for('register'))
+        return redirect(url_for('login'))
     if request.method == 'POST':
         student_name = request.form['student_name']
         parent_name = request.form['parent_name']
@@ -269,6 +271,7 @@ with app.app_context():      # optional, only if old tables exist
     db.create_all()
 
 # ... rest of your code ...
+
 
 
 
