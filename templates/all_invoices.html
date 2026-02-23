@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Invoices</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; min-height: 100vh; background: #f4f6f9; margin: 0; }
+        .sidebar { width: 220px; background: #2470ff; color: #fff; display: flex; flex-direction: column; padding: 20px; }
+        .sidebar h2 { margin-bottom: 40px; font-size: 1.5em; text-align: center; }
+        .sidebar a { color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 8px; margin-bottom: 12px; transition: background 0.2s; }
+        .sidebar a:hover { background: #1458c8; }
+        .main { flex: 1; padding: 40px; }
+        .main h1 { font-size: 2em; margin-bottom: 30px; color: #2470ff; }
+        table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; box-shadow: 0 6px 15px rgba(0,0,0,0.08); overflow: hidden; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #2470ff; color: #fff; }
+        tr:hover { background: #f1f5fb; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Hello, {{ user_name }} (Admin)</h2>
+        <a href="{{ url_for('logout') }}">Logout</a>
+        <a href="{{ url_for('all_users') }}">All Users</a>
+        <a href="{{ url_for('all_invoices') }}">All Invoices</a>
+        <a href="{{ url_for('settings') }}">Settings</a>
+    </div>
+    <div class="main">
+        <h1>All Invoices</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>User</th>
+                    <th>Invoice Number</th>
+                    <th>Date</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for invoice in invoices %}
+                <tr>
+                    <td>{{ invoice.id }}</td>
+                    <td>{{ invoice.user.username }}</td>
+                    <td>{{ invoice.invoice_number }}</td>
+                    <td>{{ invoice.date.strftime('%Y-%m-%d') }}</td>
+                    <td>${{ "%.2f"|format(invoice.total) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
