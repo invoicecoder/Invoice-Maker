@@ -312,15 +312,18 @@ def invoices():
 
     return render_template('saved_invoices.html', invoices=all_invoices)
 
-with app.app_context():      # optional, only if old tables exist
+with app.app_context():
     db.create_all()
-    if not User.query.filter_by(username="admin").first():
-        admin = User(username="admin", is_admin=True)
-        admin.set_password("Josiah")  # change this to a strong password
-        db.session.add(admin)
-        db.session.commit()
+    admin = User.query.filter_by(username="admin").first()
 
+    if not admin:
+        admin = User(username="admin")
 
+    admin.is_admin = True
+    admin.set_password("Josiah")  # choose your real password
+
+    db.session.add(admin)
+    db.session.commit()
 
 
 
