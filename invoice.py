@@ -80,14 +80,14 @@ def admin_required(f):
 def admin_menu():
     return render_template('admin_menu.html', users=users)
 @app.route('/admin/users')
-def all_users():
+def admin_users():
     if not session.get('logged_in') or not session.get('is_admin'):
         return redirect(url_for('login'))
     users = User.query.all()
     return render_template('all_users.html', users=users)
 
 @app.route('/admin/invoices')
-def all_invoices():
+def admin_invoices():
     if not session.get('logged_in') or not session.get('is_admin'):
         return redirect(url_for('login'))
     invoices = Invoice.query.order_by(Invoice.id.desc()).all()
@@ -319,6 +319,7 @@ with app.app_context():      # optional, only if old tables exist
         admin.set_password("Josaih")  # change this to a strong password
         db.session.add(admin)
         db.session.commit()
+
 
 
 
