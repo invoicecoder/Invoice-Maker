@@ -299,12 +299,12 @@ def invoices():
 
 with app.app_context():      # optional, only if old tables exist
     db.create_all()
-if not User.query.filter_by(username="admin").first():
-    admin = User(username="admin", is_admin=True)
-    admin.set_password("Josiah")  # CHANGE THIS PASSWORD
-    db.session.add(admin)
-    db.session.commit()
-# ... rest of your code ...
+    if not User.query.filter_by(username="admin").first():
+        admin = User(username="admin", is_admin=True)
+        admin.set_password("Josaih")  # change this to a strong password
+        db.session.add(admin)
+        db.session.commit()
+
 
 
 
