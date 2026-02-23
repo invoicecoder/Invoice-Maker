@@ -29,6 +29,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(200), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)
 
     # Set password (hash it for security)
     def set_password(self, password):
@@ -57,6 +58,28 @@ class Invoice(db.Model):
     total = db.Column(db.Integer)
 
     date = db.Column(db.String(20))
+
+from functools import wraps
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('logged_in'):
+            return redirect(url_for('login'))
+
+        user = User.query.get(session.get('user_id'))
+
+        if not user or not user.is_admin:
+            return "Access denied", 403
+
+        return f(*args, **kwargs)
+
+    return decorated_function
+@app.route('/admin/users')
+@admin_required
+def admin_users():
+    users = User.query.order_by(User.id.desc()).all()
+    return render_template('admin_users.html', users=users)
 @app.route('/settings', methods=['GET', 'POST'])
 def settings():
     if not session.get('logged_in'):
@@ -178,7 +201,8 @@ def login():
         if user and user.check_password(password):
             # Login successful
             session['logged_in'] = True
-            session['user_name'] = username
+            session['user_name'] = user.username
+            session['user_id'] = user.id
             return render_template("loading.html", redirect_url=url_for('menu'))
         else:
             # Login failed
@@ -263,14 +287,25 @@ def invoices():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
 
-    user = User.query.filter_by(username=session['user_name']).first()
-    all_invoices = Invoice.query.filter_by(user_id=user.id).order_by(Invoice.id.desc()).all()
+    user = User.query.get(session['user_id'])
+
+    if user.is_admin:
+        all_invoices = Invoice.query.order_by(Invoice.id.desc()).all()
+    else:
+        all_invoices = Invoice.query.filter_by(user_id=user.id)\
+                                    .order_by(Invoice.id.desc()).all()
 
     return render_template('saved_invoices.html', invoices=all_invoices)
+
 with app.app_context():      # optional, only if old tables exist
     db.create_all()
-
+if not User.query.filter_by(username="admin").first():
+    admin = User(username="admin", is_admin=True)
+    admin.set_password("Josiah")  # CHANGE THIS PASSWORD
+    db.session.add(admin)
+    db.session.commit()
 # ... rest of your code ...
+
 
 
 
