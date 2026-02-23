@@ -78,8 +78,9 @@ def admin_required(f):
 @app.route('/admin/menu')
 @admin_required
 def admin_menu():
+    users = User.query.all()
     return render_template('admin_menu.html', users=users)
-@app.route('/admin/users')
+@app.route('/admin/users', endpoint='admin_users')
 def admin_users():
     if not session.get('logged_in') or not session.get('is_admin'):
         return redirect(url_for('login'))
@@ -316,9 +317,10 @@ with app.app_context():      # optional, only if old tables exist
     db.create_all()
     if not User.query.filter_by(username="admin").first():
         admin = User(username="admin", is_admin=True)
-        admin.set_password("Josaih")  # change this to a strong password
+        admin.set_password("Josiah")  # change this to a strong password
         db.session.add(admin)
         db.session.commit()
+
 
 
 
