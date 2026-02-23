@@ -234,16 +234,12 @@ def index():
     return render_template('index.html')
 @app.route('/invoice')
 def show_invoice():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
     data = session.get('invoice_data')
     if not data:
         return redirect(url_for('index'))
     return render_template('invoice.html', **data)
-@app.route("/debug")
-def debug():
-    return {
-        "APP_PASSWORD_exists": REAL_PASSWORD is not None,
-        "SECRET_KEY_exists": app.secret_key is not None
-    }
 @app.route('/invoices')
 def invoices():
     if not session.get('logged_in'):
@@ -257,6 +253,7 @@ with app.app_context():      # optional, only if old tables exist
     db.create_all()
 
 # ... rest of your code ...
+
 
 
 
