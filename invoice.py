@@ -75,11 +75,10 @@ def admin_required(f):
         return f(*args, **kwargs)
 
     return decorated_function
-@app.route('/admin/users')
+@app.route('/admin/menu')
 @admin_required
-def admin_users():
-    users = User.query.order_by(User.id.desc()).all()
-    return render_template('admin_users.html', users=users)
+def admin_menu():
+    return render_template('admin_menu.html', users=users)
 @app.route('/settings', methods=['GET', 'POST'])
 def settings():
     if not session.get('logged_in'):
@@ -203,7 +202,10 @@ def login():
             session['logged_in'] = True
             session['user_name'] = user.username
             session['user_id'] = user.id
-            return render_template("loading.html", redirect_url=url_for('menu'))
+            if user.is_admin:
+                return render_template("loading.html", redirect_url=url_for('admin_users'))
+            else:
+                return render_template("loading.html", redirect_url=url_for('menu'))
         else:
             # Login failed
             error = "Incorrect username or password."
@@ -304,6 +306,7 @@ with app.app_context():      # optional, only if old tables exist
         admin.set_password("Josaih")  # change this to a strong password
         db.session.add(admin)
         db.session.commit()
+
 
 
 
