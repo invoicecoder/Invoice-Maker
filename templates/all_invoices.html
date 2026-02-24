@@ -43,7 +43,13 @@
                     <td>{{ invoice.id }}</td>
                     <td>{{ invoice.user.username }}</td>
                     <td>{{ invoice.invoice_number }}</td>
-                    <td>{{ invoice.date.strftime('%Y-%m-%d') }}</td>
+                    <td>
+                        {% if invoice.date.__class__.__name__ == 'datetime' %}
+                            {{ invoice.date.strftime('%Y-%m-%d') }}
+                        {% else %}
+                            {{ invoice.date }}
+                        {% endif %}
+                    </td>
                     <td>${{ "%.2f"|format(invoice.total) }}</td>
                 </tr>
                 {% endfor %}
