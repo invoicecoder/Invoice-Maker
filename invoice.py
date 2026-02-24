@@ -136,10 +136,10 @@ def settings():
                 user.set_password(new_password)
                 db.session.commit()
                 success = "Password updated successfully!"
-    {% if session['is_admin'] %}
-    return render_template('admin_settings.html', error=error, succes=succes, current_username=user=user.username)
-    {% endif %}
-    return render_template('settings.html', error=error, success=success, current_username=user.username)
+    if session.get('is_admin'):
+        return render_template('admin_settings.html', error=error, succes=succes, current_username=user=user.username)
+    else:
+        return render_template('settings.html', error=error, success=success, current_username=user.username)
 
 @app.route('/delete_invoice/<int:invoice_id>', methods=['POST'])
 def delete_invoice(invoice_id):
@@ -331,6 +331,7 @@ with app.app_context():
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
