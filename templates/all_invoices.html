@@ -32,7 +32,9 @@
                 <tr>
                     <th>ID</th>
                     <th>User</th>
-                    <th>Invoice Number</th>
+                    <th>Student Name</th>
+                    <th>Tutor Name</th>
+                    <th>Parent Name</th>
                     <th>Date</th>
                     <th>Total</th>
                 </tr>
@@ -42,7 +44,9 @@
                 <tr>
                     <td>{{ invoice.id }}</td>
                     <td>{{ invoice.user.username }}</td>
-                    <td>{{ invoice.invoice_number }}</td>
+                    <td>{{ invoice.student_name }}</td>
+                    <td>{{ invoice.tutor_name }}</td>
+                    <td>{{invoice.parent_name }}</td>
                     <td>
                         {% if invoice.date.__class__.__name__ == 'datetime' %}
                             {{ invoice.date.strftime('%Y-%m-%d') }}
