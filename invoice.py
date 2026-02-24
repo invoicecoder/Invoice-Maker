@@ -100,7 +100,7 @@ def settings():
     error = None
     success = None
 
-    user = User.query.filter_by(username=session['user_name']).first()
+    user = User.query.get(session['user_id'])
 
     if request.method == 'POST':
 
@@ -331,6 +331,7 @@ with app.app_context():
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
