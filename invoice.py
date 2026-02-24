@@ -263,7 +263,7 @@ def login():
             session['user_id'] = user.id
             session['is_admin'] = user.is_admin
             if user.is_admin:
-                return render_template("loading.html", redirect_url=url_for('admin_users'))
+                return render_template("loading.html", redirect_url=url_for('admin_menu'))
             else:
                 return render_template("loading.html", redirect_url=url_for('menu'))
         else:
@@ -371,6 +371,7 @@ with app.app_context():
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
