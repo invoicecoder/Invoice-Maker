@@ -86,7 +86,18 @@ def admin_menu():
 def admin_users():
     users = User.query.all()
     return render_template('all_users.html', users=users)
+@app.route('/delete_invoice/<int:invoice_id>', methods=['POST'])
+@admin_required
+def delete_invoice(invoice_id):
+    invoice = Invoice.query.get(invoice_id)
 
+    if not invoice:
+        return redirect(url_for('admin_invoices'))
+
+    db.session.delete(invoice)
+    db.session.commit()
+
+    return redirect(url_for('admin_invoices'))
 @app.route('/admin/invoices')
 @admin_required
 def admin_invoices():
@@ -331,6 +342,7 @@ with app.app_context():
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
