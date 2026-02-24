@@ -86,18 +86,26 @@ def admin_menu():
 def admin_users():
     users = User.query.all()
     return render_template('all_users.html', users=users)
-@app.route('/delete_invoice/<int:invoice_id>', methods=['POST'])
+@app.route('/admin/delete_user/<int:user_id>', methods=['POST'])
 @admin_required
-def delete_invoice(invoice_id):
-    invoice = Invoice.query.get(invoice_id)
+def delete_user(user_id):
+    # Admin cannot delete themselves accidentally
+    if user_id == session['user_id']:
+        return "You cannot delete your own account!", 400
 
-    if not invoice:
-        return redirect(url_for('admin_invoices'))
+    user = User.query.get(user_id)
 
-    db.session.delete(invoice)
+    if not user:
+        return redirect(url_for('admin_users'))
+
+    # Delete all invoices associated with this user first
+    Invoice.query.filter_by(user_id=user.id).delete()
+
+    # Then delete the user
+    db.session.delete(user)
     db.session.commit()
 
-    return redirect(url_for('admin_invoices'))
+    return redirect(url_for('admin_users'))
 @app.route('/admin/invoices')
 @admin_required
 def admin_invoices():
@@ -342,6 +350,7 @@ with app.app_context():
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
