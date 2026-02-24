@@ -138,6 +138,7 @@ def settings():
 
     return render_template('settings.html', error=error, success=success, current_username=user.username)
 @app.route('/admin_settings', methods=['GET', 'POST'])
+@admin_required
 def admin_settings():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
@@ -361,15 +362,16 @@ def invoices():
 with app.app_context():
     db.create_all()
     admin = User.query.filter_by(username="admin").first()
-
+    ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
     if not admin:
         admin = User(username="admin")
 
     admin.is_admin = True
-    admin.set_password("Josiah")  # choose your real password
+    admin.set_password(ADMIN_PASSWORD)  # choose your real password
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
