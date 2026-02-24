@@ -30,6 +30,7 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(200), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
+    invoices = db.relationship('Invoice', backref='user', lazy=True)
 
     # Set password (hash it for security)
     def set_password(self, password):
@@ -371,6 +372,7 @@ with app.app_context():
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
