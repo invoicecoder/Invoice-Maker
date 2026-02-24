@@ -136,69 +136,28 @@ def settings():
                 user.set_password(new_password)
                 db.session.commit()
                 success = "Password updated successfully!"
-
+    {% if session['is_admin'] %}
+    return render_template('admin_settings.html', error=error, succes=succes, current_username=user=user.username)
+    {% endif %}
     return render_template('settings.html', error=error, success=success, current_username=user.username)
-@app.route('/admin_settings', methods=['GET', 'POST'])
-@admin_required
-def admin_settings():
-    if not session.get('logged_in'):
-        return redirect(url_for('login'))
 
-    error = None
-    success = None
-
-    user = User.query.filter_by(username=session['user_name']).first()
-
-    if request.method == 'POST':
-
-        # ---------- CHANGE USERNAME ----------
-        if 'new_username' in request.form:
-            new_username = request.form['new_username'].strip()
-
-            if not new_username:
-                error = "Username cannot be empty."
-
-            elif User.query.filter_by(username=new_username).first():
-                error = "Username already taken."
-
-            else:
-                user.username = new_username
-                db.session.commit()
-                session['user_name'] = new_username
-                success = "Username updated successfully!"
-
-        # ---------- CHANGE PASSWORD ----------
-        elif 'current_password' in request.form:
-            current_password = request.form['current_password']
-            new_password = request.form['new_password']
-            confirm_password = request.form['confirm_password']
-
-            if not user.check_password(current_password):
-                error = "Current password is incorrect."
-            elif new_password != confirm_password:
-                error = "New passwords do not match."
-            elif len(new_password) < 6:
-                error = "Password must be at least 6 characters."
-            else:
-                user.set_password(new_password)
-                db.session.commit()
-                success = "Password updated successfully!"
-
-    return render_template('admin_settings.html', error=error, success=success, current_username=user.username)
 @app.route('/delete_invoice/<int:invoice_id>', methods=['POST'])
 def delete_invoice(invoice_id):
     if not session.get('logged_in'):
         return redirect(url_for('login'))
 
-    user = User.query.filter_by(username=session['user_name']).first()
-    if not user:
-        return redirect(url_for('login'))
+    user = User.query.get(session['user_id'])
+    invoice = Invoice.query.get(invoice_id)
 
-    invoice = Invoice.query.filter_by(id=invoice_id, user_id=user.id).first()
+    if not invoice:
+        return redirect(url_for('invoices'))
 
-    if invoice:
-        db.session.delete(invoice)
-        db.session.commit()
+    # Allow admin OR owner
+    if not user.is_admin and invoice.user_id != user.id:
+        return "Access denied", 403
+
+    db.session.delete(invoice)
+    db.session.commit()
 
     return redirect(url_for('invoices'))
 @app.route('/register', methods=['GET', 'POST'])
@@ -275,7 +234,7 @@ def login():
 
 @app.route('/logout')
 def logout():
-    session.pop('logged_in', None)
+    session.clear()
     return redirect(url_for('login'))
 
 
@@ -372,6 +331,7 @@ with app.app_context():
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
