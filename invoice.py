@@ -323,6 +323,19 @@ def show_invoice():
     if not data:
         return redirect(url_for('index'))
     return render_template('invoice.html', **data)
+@app.route('/invoice/<int:invoice_id>')
+def show_invoices(invoice_id):
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+
+    user = User.query.get(session['user_id'])
+    invoice = Invoice.query.get_or_404(invoice_id)
+
+    # Allow admin OR owner
+    if not user.is_admin and invoice.user_id != user.id:
+        return "Access denied", 403
+
+    return render_template('invoice.html', invoice=invoice)
 @app.route('/invoices')
 def invoices():
     if not session.get('logged_in'):
@@ -350,6 +363,7 @@ with app.app_context():
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
