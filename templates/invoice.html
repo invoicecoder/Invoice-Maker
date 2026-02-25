@@ -66,8 +66,8 @@
             <img src="{{ url_for('static', filename='logo.jpg') }}" width="120">
             <div>
                 <h2>Classical Conversations</h2>
-                <p><strong>Director:</strong> {{ director_name }}</p>
-                <p><strong>Email:</strong> {{ director_email }}</p>
+                <p><strong>Director:</strong> {{ invoice.director_name }}</p>
+                <p><strong>Email:</strong> {{ invoice.director_email }}</p>
 
                 <p></p>
             </div>
@@ -82,19 +82,19 @@
 
         <!-- INVOICE DETAILS -->
         <div class="details">
-            <p><strong>Date:</strong> {{ date }}</p>
-            <p><strong>Student:</strong> {{ student_name }}</p>
-            <p><strong>Parent:</strong> {{ parent_name }}</p>
-            <p><strong>Tutor:</strong> {{ tutor_name}}</p>
-            <p><strong>Month:</strong> {{ month }}</p>
-            <p><strong>Application Fee:</strong> ${{ a_fee }}</p>
-            <p><strong>Supply Fee:</strong> ${{ s_fee }} </p>
-            <p><strong>Tuition Fee:</strong> ${{ t_fee}} </p>
-            <p><strong>Facility Fee:</strong> ${{ f_fee}}</p>
+            <p><strong>Date:</strong> {{ invoice.date }}</p>
+            <p><strong>Student:</strong> {{ invoice.student_name }}</p>
+            <p><strong>Parent:</strong> {{ invoice.parent_name }}</p>
+            <p><strong>Tutor:</strong> {{ invoice.tutor_name}}</p>
+            <p><strong>Month:</strong> {{ invoice.month }}</p>
+            <p><strong>Application Fee:</strong> ${{ invoice.a_fee }}</p>
+            <p><strong>Supply Fee:</strong> ${{ invoice.s_fee }} </p>
+            <p><strong>Tuition Fee:</strong> ${{ invoice.t_fee}} </p>
+            <p><strong>Facility Fee:</strong> ${{ invoice.f_fee}}</p>
         </div>
 
         <div class="total">
-            Total Due: ${{total}}
+            Total Due: ${{invoice.total}}
         </div>
 
         <!-- BUTTONS -->
@@ -106,4 +106,5 @@
     </div>
 </body>
 </html>
+
 
