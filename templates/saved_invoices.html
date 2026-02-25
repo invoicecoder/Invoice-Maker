@@ -65,7 +65,7 @@
         <td>{{ invoice.a_fee }}</td>
         <td>${{ invoice.total }}</td>
         <td>
-            <a href="{{ url_for('show_invoice') }}"> View Invoice </a>
+            <a href="{{ url_for('show_invoices') }}"> View Invoice </a>
         </td>
         <td>
             <form method="POST" action="{{ url_for('delete_invoice', invoice_id=invoice.id) }}">
