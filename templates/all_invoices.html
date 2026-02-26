@@ -29,7 +29,6 @@
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>User</th>
                     <th>Student Name</th>
                     <th>Tutor Name</th>
@@ -42,7 +41,6 @@
             <tbody>
                 {% for invoice in invoices %}
                 <tr>
-                    <td>{{ invoice.id }}</td>
                     <td>{{ invoice.user.username }}</td>
                     <td>{{ invoice.student_name }}</td>
                     <td>{{ invoice.tutor_name }}</td>
