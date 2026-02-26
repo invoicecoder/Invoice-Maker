@@ -320,7 +320,7 @@ def show_invoice():
     data = session.get('invoice_data')
     if not data:
         return redirect(url_for('index'))
-    return render_template('invoice.html', **data)
+    return render_template('invoice.html', invoice=data)
 @app.route('/invoice/<int:invoice_id>')
 def show_invoices(invoice_id):
     if not session.get('logged_in'):
@@ -361,6 +361,7 @@ with app.app_context():
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
