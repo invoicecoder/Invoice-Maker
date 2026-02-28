@@ -292,7 +292,6 @@ def settings():
 
 # ---------------------- Bootstrap Admin ----------------------
 
-@app.before_first_request
 def bootstrap_admin():
     admin = get_user_by_username("admin")
     if not admin:
@@ -307,6 +306,7 @@ with app.app_context():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+
 
 
 
