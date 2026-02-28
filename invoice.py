@@ -301,11 +301,13 @@ def bootstrap_admin():
             "password_hash": generate_password_hash(ADMIN_PASSWORD),
             "is_admin": True
         })
-
+with app.app_context():
+    bootstrap_admin()
 # ---------------------- Run ----------------------
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+
 
 
 
