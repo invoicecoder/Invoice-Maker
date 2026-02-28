@@ -1,64 +1,64 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-from datetime import datetime, timedelta
-import random
-from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
+import requests
+import json
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY")
+
 REAL_PASSWORD = os.environ.get("APP_PASSWORD")
-database_url = os.environ.get("DATABASE_URL")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
 
-if database_url and database_url.startswith("postgres://"):
-    database_url = database_url.replace("postgres://", "postgresql://", 1)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = database_url
-app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-    "pool_size": 5,
-    "max_overflow": 10,
-    "pool_timeout": 30,
-    "pool_recycle": 1800,
+SUPABASE_URL = os.environ.get("SUPABASE_URL")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
+HEADERS = {
+    "apikey": SUPABASE_KEY,
+    "Authorization": f"Bearer {SUPABASE_KEY}",
+    "Content-Type": "application/json"
 }
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy(app)
+# ---------------------- Supabase Helper Functions ----------------------
 
-class User(db.Model):
-    __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    password_hash = db.Column(db.String(200), nullable=False)
-    is_admin = db.Column(db.Boolean, default=False)
-    invoices = db.relationship('Invoice', backref='user', lazy=True)
+def supabase_get(table, filters=""):
+    url = f"{SUPABASE_URL}/rest/v1/{table}?{filters}"
+    resp = requests.get(url, headers=HEADERS)
+    return resp.json() if resp.status_code == 200 else []
 
-    # Set password (hash it for security)
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+def supabase_insert(table, data):
+    url = f"{SUPABASE_URL}/rest/v1/{table}"
+    resp = requests.post(url, headers=HEADERS, data=json.dumps(data))
+    return resp.json() if resp.status_code in (200, 201) else None
 
-    # Check password
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
-class Invoice(db.Model):
-    __tablename__ = 'invoices'
-    id = db.Column(db.Integer, primary_key=True)
+def supabase_update(table, data, filters):
+    url = f"{SUPABASE_URL}/rest/v1/{table}?{filters}"
+    resp = requests.patch(url, headers=HEADERS, data=json.dumps(data))
+    return resp.json() if resp.status_code in (200, 204) else None
 
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+def supabase_delete(table, filters):
+    url = f"{SUPABASE_URL}/rest/v1/{table}?{filters}"
+    resp = requests.delete(url, headers=HEADERS)
+    return resp.status_code in (200, 204)
 
-    student_name = db.Column(db.String(100))
-    parent_name = db.Column(db.String(100))
-    tutor_name = db.Column(db.String(100))
-    director_name = db.Column(db.String(100))
-    director_email = db.Column(db.String(100))
-    month = db.Column(db.String(50))
+# ---------------------- User/Invoice Logic ----------------------
 
-    a_fee = db.Column(db.Integer)
-    s_fee = db.Column(db.Integer)
-    f_fee = db.Column(db.Integer)
-    t_fee = db.Column(db.Integer)
-    total = db.Column(db.Integer)
+def get_user_by_username(username):
+    users = supabase_get("users", f"username=eq.{username}")
+    return users[0] if users else None
 
-    date = db.Column(db.String(20))
+def get_user_by_id(user_id):
+    users = supabase_get("users", f"id=eq.{user_id}")
+    return users[0] if users else None
+
+def get_invoice_by_id(invoice_id):
+    invoices = supabase_get("invoices", f"id=eq.{invoice_id}")
+    return invoices[0] if invoices else None
+
+def get_all_invoices():
+    return supabase_get("invoices")
+
+# ---------------------- Decorators ----------------------
 
 from functools import wraps
 
@@ -67,147 +67,13 @@ def admin_required(f):
     def decorated_function(*args, **kwargs):
         if not session.get('logged_in'):
             return redirect(url_for('login'))
-
-        user = User.query.get(session.get('user_id'))
-
-        if not user or not user.is_admin:
+        user = get_user_by_id(session.get('user_id'))
+        if not user or not user.get('is_admin'):
             return "Access denied", 403
-
         return f(*args, **kwargs)
-
     return decorated_function
-@app.route('/admin/menu')
-@admin_required
-def admin_menu():
-    users = User.query.all()
-    return render_template('admin_menu.html', users=users)
-@app.route('/admin/users', endpoint='admin_users')
-@admin_required
-def admin_users():
-    users = User.query.all()
-    return render_template('all_users.html', users=users)
-@app.route('/admin/delete_user/<int:user_id>', methods=['POST'])
-@admin_required
-def delete_user(user_id):
-    # Admin cannot delete themselves accidentally
-    if user_id == session['user_id']:
-        return "You cannot delete your own account!", 400
 
-    user = User.query.get(user_id)
-
-    if not user:
-        return redirect(url_for('admin_users'))
-
-    # Delete all invoices associated with this user first
-    Invoice.query.filter_by(user_id=user.id).delete()
-
-    # Then delete the user
-    db.session.delete(user)
-    db.session.commit()
-
-    return redirect(url_for('admin_users'))
-@app.route('/admin/invoices')
-@admin_required
-def admin_invoices():
-    invoices = Invoice.query.order_by(Invoice.id.desc()).all()
-    return render_template('all_invoices.html', invoices=invoices)
-@app.route('/settings', methods=['GET', 'POST'])
-def settings():
-    if not session.get('logged_in'):
-        return redirect(url_for('login'))
-
-    error = None
-    success = None
-
-    user = User.query.get(session['user_id'])
-
-    if request.method == 'POST':
-
-        # ---------- CHANGE USERNAME ----------
-        if 'new_username' in request.form:
-            new_username = request.form['new_username'].strip()
-
-            if not new_username:
-                error = "Username cannot be empty."
-
-            elif User.query.filter_by(username=new_username).first():
-                error = "Username already taken."
-
-            else:
-                user.username = new_username
-                db.session.commit()
-                session['user_name'] = new_username
-                success = "Username updated successfully!"
-
-        # ---------- CHANGE PASSWORD ----------
-        elif 'current_password' in request.form:
-            current_password = request.form['current_password']
-            new_password = request.form['new_password']
-            confirm_password = request.form['confirm_password']
-
-            if not user.check_password(current_password):
-                error = "Current password is incorrect."
-            elif new_password != confirm_password:
-                error = "New passwords do not match."
-            elif len(new_password) < 6:
-                error = "Password must be at least 6 characters."
-            else:
-                user.set_password(new_password)
-                db.session.commit()
-                success = "Password updated successfully!"
-        
-    return render_template('settings.html', error=error, success=success, current_username=user.username)
-
-@app.route('/delete_invoice/<int:invoice_id>', methods=['POST'])
-def delete_invoice(invoice_id):
-    if not session.get('logged_in'):
-        return redirect(url_for('login'))
-
-    user = User.query.get(session['user_id'])
-    invoice = Invoice.query.get(invoice_id)
-
-    if not invoice:
-        if session.get('.is_admin'):
-            return redirect(url_for('admin_invoices'))
-        else:
-            return redirect(url_for('invoices'))
-
-    # Allow admin OR owner
-    if not user.is_admin and invoice.user_id != user.id:
-        return "Access denied", 403
-
-    db.session.delete(invoice)
-    db.session.commit()
-
-    return redirect(url_for('invoices'))
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if session.get('logged_in'):
-        return redirect(url_for('menu'))
-    
-    error = None
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        app_password = request.form['app_password']  # Added field
-
-        # Check shared app password
-        if app_password != REAL_PASSWORD:
-            error = "Invalid app password."
-        # Check if username exists
-        elif User.query.filter_by(username=username).first():
-            error = "Username already exists."
-        elif len(password) < 6:
-            error = "Password must be at least 6 characters."
-        else:
-            # Create user
-            user = User(username=username)
-            user.set_password(password)
-            db.session.add(user)
-            db.session.commit()
-            return render_template("loading.html", redirect_url=url_for('login'))
-
-    return render_template('register.html', error=error)
+# ---------------------- Routes ----------------------
 
 @app.route("/health")
 def health():
@@ -217,37 +83,57 @@ def health():
 def menu():
     if not session.get('logged_in'):
         return redirect(url_for('register'))
+    return render_template('menu.html', user_name=session.get('user_name'))
 
-    user_name = session.get('user_name', "User")
-    return render_template('menu.html', user_name=user_name)
+# ---------------------- Registration/Login ----------------------
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if session.get('logged_in'):
+        return redirect(url_for('menu'))
+    
+    error = None
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        app_password = request.form['app_password']
+
+        if app_password != REAL_PASSWORD:
+            error = "Invalid app password."
+        elif get_user_by_username(username):
+            error = "Username already exists."
+        elif len(password) < 6:
+            error = "Password must be at least 6 characters."
+        else:
+            user_data = {
+                "username": username,
+                "password_hash": generate_password_hash(password),
+                "is_admin": False
+            }
+            supabase_insert("users", user_data)
+            return render_template("loading.html", redirect_url=url_for('login'))
+
+    return render_template('register.html', error=error)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    # If already logged in, redirect to menu
     if session.get('logged_in'):
         return redirect(url_for('menu'))
 
     error = None
     if request.method == 'POST':
-        username = request.form['name']   # form field for username
+        username = request.form['name']
         password = request.form['password']
 
-        # Look up user in Postgres
-        user = User.query.filter_by(username=username).first()
-
-        if user and user.check_password(password):
-            # Login successful
+        user = get_user_by_username(username)
+        if user and check_password_hash(user.get('password_hash', ''), password):
             session['logged_in'] = True
-            session['user_name'] = user.username
-            session['user_id'] = user.id
-            session['is_admin'] = user.is_admin
-            if user.is_admin:
-                return render_template("loading.html", redirect_url=url_for('admin_menu'))
-            else:
-                return render_template("loading.html", redirect_url=url_for('menu'))
+            session['user_name'] = user['username']
+            session['user_id'] = user['id']
+            session['is_admin'] = user['is_admin']
+            redirect_url = url_for('admin_menu') if user['is_admin'] else url_for('menu')
+            return render_template("loading.html", redirect_url=redirect_url)
         else:
-            # Login failed
             error = "Incorrect username or password."
 
     return render_template('login.html', error=error)
@@ -257,65 +143,67 @@ def logout():
     session.clear()
     return redirect(url_for('login'))
 
+# ---------------------- Admin Routes ----------------------
 
+@app.route('/admin/menu')
+@admin_required
+def admin_menu():
+    users = supabase_get("users")
+    return render_template('admin_menu.html', users=users)
+
+@app.route('/admin/users')
+@admin_required
+def admin_users():
+    users = supabase_get("users")
+    return render_template('all_users.html', users=users)
+
+@app.route('/admin/delete_user/<int:user_id>', methods=['POST'])
+@admin_required
+def delete_user(user_id):
+    if user_id == session['user_id']:
+        return "You cannot delete your own account!", 400
+    supabase_delete("invoices", f"user_id=eq.{user_id}")
+    supabase_delete("users", f"id=eq.{user_id}")
+    return redirect(url_for('admin_users'))
+
+@app.route('/admin/invoices')
+@admin_required
+def admin_invoices():
+    invoices = get_all_invoices()
+    invoices.sort(key=lambda x: x['id'], reverse=True)
+    return render_template('all_invoices.html', invoices=invoices)
+
+# ---------------------- Invoice Routes ----------------------
 
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
+
     if request.method == 'POST':
-        student_name = request.form['student_name']
-        parent_name = request.form['parent_name']
-        tutor_name = request.form['tutor_name']
-        director_name = request.form['director_name']
-        director_email = request.form['director_email']
-        month = request.form['month']
-        a_fee = int(request.form.get('a_fee', 0) or 0)
-        s_fee = int(request.form.get('s_fee', 0) or 0)
-        f_fee = int(request.form.get('f_fee', 0) or 0)
-        t_fee = int(request.form.get('t_fee', 0) or 0)
-
-        total = a_fee + s_fee + f_fee + t_fee
-        date = datetime.now().strftime("%Y-%m-%d")
-        user = User.query.filter_by(username=session['user_name']).first()
-
-        new_invoice = Invoice(
-        user_id=user.id,
-        student_name=student_name,
-        parent_name=parent_name,
-        tutor_name=tutor_name,
-        director_name=director_name,
-        director_email=director_email,
-        month=month,
-        a_fee=a_fee,
-        s_fee=s_fee,
-        f_fee=f_fee,
-        t_fee=t_fee,
-        total=total,
-        date=date
-    )
-
-        db.session.add(new_invoice)
-        db.session.commit()
-        session['invoice_data'] = {
-            "student_name": student_name,
-            "parent_name": parent_name,
-            "tutor_name": tutor_name,
-            "director_name": director_name,
-            "director_email": director_email,
-            "month": month,
-            "a_fee": a_fee,
-            "s_fee": s_fee,
-            "f_fee": f_fee,
-            "t_fee": t_fee,
-            "date": date,
-            "total": total
+        user_id = session['user_id']
+        data = {
+            "user_id": user_id,
+            "student_name": request.form['student_name'],
+            "parent_name": request.form['parent_name'],
+            "tutor_name": request.form['tutor_name'],
+            "director_name": request.form['director_name'],
+            "director_email": request.form['director_email'],
+            "month": request.form['month'],
+            "a_fee": int(request.form.get('a_fee', 0) or 0),
+            "s_fee": int(request.form.get('s_fee', 0) or 0),
+            "f_fee": int(request.form.get('f_fee', 0) or 0),
+            "t_fee": int(request.form.get('t_fee', 0) or 0),
+            "total": 0,  # computed below
+            "date": datetime.now().strftime("%Y-%m-%d")
         }
-
+        data["total"] = data["a_fee"] + data["s_fee"] + data["f_fee"] + data["t_fee"]
+        invoice = supabase_insert("invoices", data)
+        session['invoice_data'] = data
         return render_template("loading.html", redirect_url=url_for('show_invoice'))
 
-
     return render_template('index.html')
+
 @app.route('/invoice')
 def show_invoice():
     if not session.get('logged_in'):
@@ -324,46 +212,101 @@ def show_invoice():
     if not data:
         return redirect(url_for('index'))
     return render_template('invoice.html', invoice=data)
+
 @app.route('/invoice/<int:invoice_id>')
 def show_invoices(invoice_id):
     if not session.get('logged_in'):
         return redirect(url_for('login'))
 
-    user = User.query.get(session['user_id'])
-    invoice = Invoice.query.get_or_404(invoice_id)
-
-    # Allow admin OR owner
-    if not user.is_admin and invoice.user_id != user.id:
+    invoice = get_invoice_by_id(invoice_id)
+    user = get_user_by_id(session['user_id'])
+    if not invoice or (not user['is_admin'] and invoice['user_id'] != user['id']):
         return "Access denied", 403
-
     return render_template('invoice.html', invoice=invoice)
+
 @app.route('/invoices')
 def invoices():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
 
-    user = User.query.get(session['user_id'])
-
-    if user.is_admin:
-        all_invoices = Invoice.query.order_by(Invoice.id.desc()).all()
-    else:
-        all_invoices = Invoice.query.filter_by(user_id=user.id)\
-                                    .order_by(Invoice.id.desc()).all()
-
+    user = get_user_by_id(session['user_id'])
+    all_invoices = get_all_invoices()
+    if not user['is_admin']:
+        all_invoices = [i for i in all_invoices if i['user_id'] == user['id']]
+    all_invoices.sort(key=lambda x: x['id'], reverse=True)
     return render_template('saved_invoices.html', invoices=all_invoices)
 
-with app.app_context():
-    db.create_all()
-    admin = User.query.filter_by(username="admin").first()
-    ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
+@app.route('/delete_invoice/<int:invoice_id>', methods=['POST'])
+def delete_invoice(invoice_id):
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+
+    user = get_user_by_id(session['user_id'])
+    invoice = get_invoice_by_id(invoice_id)
+    if not invoice:
+        return redirect(url_for('invoices'))
+    if not user['is_admin'] and invoice['user_id'] != user['id']:
+        return "Access denied", 403
+
+    supabase_delete("invoices", f"id=eq.{invoice_id}")
+    return redirect(url_for('invoices'))
+
+# ---------------------- Settings ----------------------
+
+@app.route('/settings', methods=['GET', 'POST'])
+def settings():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+
+    user = get_user_by_id(session['user_id'])
+    error = None
+    success = None
+
+    if request.method == 'POST':
+        # Change username
+        new_username = request.form.get('new_username')
+        if new_username:
+            if get_user_by_username(new_username):
+                error = "Username already taken."
+            else:
+                supabase_update("users", {"username": new_username}, f"id=eq.{user['id']}")
+                session['user_name'] = new_username
+                success = "Username updated successfully!"
+
+        # Change password
+        current_password = request.form.get('current_password')
+        new_password = request.form.get('new_password')
+        confirm_password = request.form.get('confirm_password')
+        if current_password and new_password:
+            if not check_password_hash(user['password_hash'], current_password):
+                error = "Current password is incorrect."
+            elif new_password != confirm_password:
+                error = "New passwords do not match."
+            elif len(new_password) < 6:
+                error = "Password must be at least 6 characters."
+            else:
+                supabase_update("users", {"password_hash": generate_password_hash(new_password)}, f"id=eq.{user['id']}")
+                success = "Password updated successfully!"
+
+    return render_template('settings.html', error=error, success=success, current_username=user['username'])
+
+# ---------------------- Bootstrap Admin ----------------------
+
+@app.before_first_request
+def bootstrap_admin():
+    admin = get_user_by_username("admin")
     if not admin:
-        admin = User(username="admin")
+        supabase_insert("users", {
+            "username": "admin",
+            "password_hash": generate_password_hash(ADMIN_PASSWORD),
+            "is_admin": True
+        })
 
-    admin.is_admin = True
-    admin.set_password(ADMIN_PASSWORD)  # choose your real password
+# ---------------------- Run ----------------------
 
-    db.session.add(admin)
-    db.session.commit()
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+
 
 
 
