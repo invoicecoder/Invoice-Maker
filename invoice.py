@@ -167,7 +167,10 @@ def delete_invoice(invoice_id):
     invoice = Invoice.query.get(invoice_id)
 
     if not invoice:
-        return redirect(url_for('admin_invoices'))
+        if session.get('.is_admin'):
+            return redirect(url_for('admin_invoices'))
+        else:
+            return redirect(url_for('invoices'))
 
     # Allow admin OR owner
     if not user.is_admin and invoice.user_id != user.id:
@@ -361,6 +364,7 @@ with app.app_context():
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
