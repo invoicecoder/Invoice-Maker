@@ -183,7 +183,7 @@ def delete_invoice(invoice_id):
     invoice = Invoice.query.get(invoice_id)
 
     if not invoice:
-        if session.get('.is_admin'):
+        if user.is_admin:
             return redirect(url_for('admin_invoices'))
         else:
             return redirect(url_for('invoices'))
@@ -390,6 +390,7 @@ with app.app_context():
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
