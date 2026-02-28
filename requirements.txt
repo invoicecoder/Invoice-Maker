@@ -1,8 +1,6 @@
 Flask==3.1.3
-Flask_SQLAlchemy==3.0.5
-Werkzeug==3.1.0
+requests
 gunicorn
-psycopg[binary]>=3.1
 
 
 
