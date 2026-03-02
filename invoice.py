@@ -78,7 +78,10 @@ class Payment(db.Model):
     description = db.Column(db.String(200))
 
     # Relationship to invoice
-    invoice = db.relationship('Invoice', backref='payments')
+    invoice = db.relationship(
+        'Invoice',
+        back_populates='payments'
+    )
 
 
 from functools import wraps
@@ -475,6 +478,7 @@ with app.app_context():
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
