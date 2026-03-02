@@ -398,7 +398,9 @@ def show_invoices(invoice_id):
     if not user.is_admin and invoice.user_id != user.id:
         return "Access denied", 403
 
-    return render_template('invoice.html', invoice=invoice)
+    payment_subtotal = sum(payment.amount for payment in invoice.payments) if invoice.payments else 0
+
+    return render_template('invoice.html', invoice=invoice, payment_subtotal=payment_subtotal)
 
 
 @app.route('/invoices')
@@ -457,6 +459,7 @@ with app.app_context():
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
