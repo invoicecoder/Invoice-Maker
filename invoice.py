@@ -366,14 +366,44 @@ def invoices():
 
     user = User.query.get(session['user_id'])
 
+    # Start base query
     if user.is_admin:
-        all_invoices = Invoice.query.order_by(Invoice.id.desc()).all()
+        query = Invoice.query
     else:
-        all_invoices = Invoice.query.filter_by(user_id=user.id) \
-            .order_by(Invoice.id.desc()).all()
+        query = Invoice.query.filter_by(user_id=user.id)
 
-    return render_template('saved_invoices.html', invoices=all_invoices)
+    # ---- SEARCH BY STUDENT NAME ----
+    search = request.args.get('search')
+    if search:
+        query = query.filter(
+            Invoice.student_name.ilike(f"%{search}%")
+        )
 
+    # ---- FILTER BY MONTH ----
+    month = request.args.get('month')
+    if month:
+        query = query.filter_by(month=month)
+
+    # ---- FILTER BY TUTOR ----
+    tutor = request.args.get('tutor')
+    if tutor:
+        query = query.filter_by(tutor_name=tutor)
+
+    # ---- SORTING ----
+    sort = request.args.get('sort', 'newest')
+
+    if sort == 'oldest':
+        query = query.order_by(Invoice.id.asc())
+    elif sort == 'highest':
+        query = query.order_by(Invoice.total.desc())
+    elif sort == 'lowest':
+        query = query.order_by(Invoice.total.asc())
+    else:
+        query = query.order_by(Invoice.id.desc())
+
+    invoices = query.all()
+
+    return render_template('saved_invoices.html', invoices=invoices)
 
 with app.app_context():
     db.create_all()
@@ -387,6 +417,7 @@ with app.app_context():
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
