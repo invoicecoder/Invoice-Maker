@@ -64,7 +64,7 @@ class Invoice(db.Model):
     date = db.Column(db.String(20))
     payments = db.relationship(
         'Payment',
-        backref='invoice',
+        back_populates='invoice',
         lazy=True,
         cascade='all, delete-orphan'
     )
@@ -478,6 +478,7 @@ with app.app_context():
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
