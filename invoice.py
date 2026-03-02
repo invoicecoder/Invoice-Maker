@@ -81,6 +81,13 @@ def admin_required(f):
         return f(*args, **kwargs)
 
     return decorated_function
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('logged_in'):
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 
 @app.route('/admin/menu')
@@ -127,9 +134,8 @@ def admin_invoices():
 
 
 @app.route('/settings', methods=['GET', 'POST'])
+@login_required
 def settings():
-    if not session.get('logged_in'):
-        return redirect(url_for('login'))
 
     error = None
     success = None
@@ -175,9 +181,9 @@ def settings():
 
 
 @app.route('/delete_invoice/<int:invoice_id>', methods=['POST'])
+@login_required
 def delete_invoice(invoice_id):
-    if not session.get('logged_in'):
-        return redirect(url_for('login'))
+
 
     user = User.query.get(session['user_id'])
     invoice = Invoice.query.get(invoice_id)
@@ -196,9 +202,9 @@ def delete_invoice(invoice_id):
 
 
 @app.route('/register', methods=['GET', 'POST'])
+@login_required
 def register():
-    if session.get('logged_in'):
-        return redirect(url_for('menu'))
+
 
     error = None
     if request.method == 'POST':
@@ -231,9 +237,9 @@ def health():
 
 
 @app.route('/')
+@login_required
 def menu():
-    if not session.get('logged_in'):
-        return redirect(url_for('register'))
+
 
     user_name = session.get('user_name', "User")
     return render_template('menu.html', user_name=user_name)
@@ -277,9 +283,9 @@ def logout():
 
 
 @app.route('/index', methods=['GET', 'POST'])
+@login_required
 def index():
-    if not session.get('logged_in'):
-        return redirect(url_for('login'))
+
     if request.method == 'POST':
         student_name = request.form['student_name']
         parent_name = request.form['parent_name']
@@ -335,9 +341,9 @@ def index():
 
 
 @app.route('/invoice')
+@login_required
 def show_invoice():
-    if not session.get('logged_in'):
-        return redirect(url_for('login'))
+
     data = session.get('invoice_data')
     if not data:
         return redirect(url_for('index'))
@@ -345,9 +351,9 @@ def show_invoice():
 
 
 @app.route('/invoice/<int:invoice_id>')
+@login_required
 def show_invoices(invoice_id):
-    if not session.get('logged_in'):
-        return redirect(url_for('login'))
+
 
     user = User.query.get(session['user_id'])
     invoice = Invoice.query.get_or_404(invoice_id)
@@ -360,10 +366,8 @@ def show_invoices(invoice_id):
 
 
 @app.route('/invoices')
+@login_required
 def invoices():
-    if not session.get('logged_in'):
-        return redirect(url_for('login'))
-
     user = User.query.get(session['user_id'])
 
     # Start base query
@@ -417,6 +421,7 @@ with app.app_context():
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
