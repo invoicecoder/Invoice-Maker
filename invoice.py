@@ -444,16 +444,8 @@ def invoices():
         query = query.order_by(Invoice.id.desc())
 
     invoices = query.all()
-    invoices_with_balance = []
-    for inv in invoices:
-        paid = sum(p.amount for p in inv.payments) if inv.payments else 0
-        remaining = inv.total - paid
-        invoices_with_balance.append({
-            "invoice": inv,
-            "remaining": remaining
-        })
 
-    return render_template('saved_invoices.html', invoices=invoices_with_balance)
+    return render_template('saved_invoices.html', invoices=invoices)
 
 with app.app_context():
     db.create_all()
@@ -467,6 +459,7 @@ with app.app_context():
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
