@@ -181,6 +181,14 @@
                 </button>
             </form>
         </td>
+        <td>
+            <form method="POST" action="{{ url_for('add_payment', invoice_id=invoice.id) }}">
+            <input type="date" name="payment_date" required style="width:120px;">
+            <input type="number" name="amount" step="0.01" placeholder="Amount" required style="width:80px;">
+            <input type="text" name="description" placeholder="Description" style="width:150px;">
+            <button type="submit" class="delete-btn" style="background:#28a745;">Add</button>
+            </form>
+        </td>
     </tr>
     {% endfor %}
 </table>
