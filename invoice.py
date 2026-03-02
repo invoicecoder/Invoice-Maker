@@ -113,7 +113,34 @@ def admin_menu():
 def admin_users():
     users = User.query.all()
     return render_template('all_users.html', users=users)
+@app.route('/add_payment/<int:invoice_id>', methods=['POST'])
+@login_required
+def add_payment(invoice_id):
+    # Fetch the invoice
+    invoice = Invoice.query.get_or_404(invoice_id)
+    user = User.query.get(session['user_id'])
 
+    # Only allow admin or the owner of the invoice
+    if not user.is_admin and invoice.user_id != user.id:
+        return "Access denied", 403
+
+    # Get data from form
+    payment_date = request.form['payment_date']
+    amount = float(request.form['amount'])
+    description = request.form.get('description', '')
+
+    # Create and save payment
+    new_payment = Payment(
+        invoice_id=invoice.id,
+        date=payment_date,
+        amount=amount,
+        description=description
+    )
+    db.session.add(new_payment)
+    db.session.commit()
+
+    # Redirect back to the saved invoices page
+    return redirect(url_for('invoices'))
 
 @app.route('/admin/delete_user/<int:user_id>', methods=['POST'])
 @admin_required
@@ -432,6 +459,7 @@ with app.app_context():
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
