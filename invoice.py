@@ -62,6 +62,17 @@ class Invoice(db.Model):
     total = db.Column(db.Integer)
 
     date = db.Column(db.String(20))
+class Payment(db.Model):
+    __tablename__ = 'payments'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    invoice_id = db.Column(db.Integer, db.ForeignKey('invoices.id'), nullable=False)
+    date = db.Column(db.String(20), nullable=False)
+    amount = db.Column(db.Float, nullable=False)
+    description = db.Column(db.String(200))
+
+    # Relationship to invoice
+    invoice = db.relationship('Invoice', backref='payments')
 
 
 from functools import wraps
@@ -421,6 +432,7 @@ with app.app_context():
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
