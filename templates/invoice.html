@@ -5,41 +5,77 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
         }
+
         .invoice {
-            max-width: 600px;
-            margin: 20px auto;
-            padding: 20px;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 40px;
+            background: #ffffff;
             border: 1px solid #ddd;
         }
+
         .header {
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: flex-start;
         }
-        .header div {
+
+        .company-info h2 {
+            margin: 0 0 5px 0;
+        }
+
+        .right {
             text-align: right;
         }
+
         h1 {
             text-align: center;
-            margin-top: 20px;
+            margin: 40px 0 30px;
+            letter-spacing: 2px;
         }
-        hr {
-            margin: 20px 0;
+
+        .section {
+            margin-bottom: 25px;
         }
-        .details p {
-            margin: 5px 0;
+
+        .section p {
+            margin: 4px 0;
         }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        table th, table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #f0f0f0;
+            text-align: left;
+        }
+
+        table td:last-child {
+            text-align: right;
+        }
+
         .total {
-            font-size: 1.5em;
-            font-weight: bold;
-            text-align: center;
             margin-top: 20px;
+            text-align: right;
+            font-size: 1.3em;
+            font-weight: bold;
         }
+
         .buttons {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 40px;
         }
+
         .buttons button, .buttons a {
             padding: 10px 15px;
             margin: 5px;
@@ -49,62 +85,95 @@
             border: none;
             border-radius: 4px;
         }
+
         .buttons a {
             display: inline-block;
         }
+
         @media print {
+            body {
+                background: white;
+            }
             .buttons {
                 display: none;
+            }
+            .invoice {
+                border: none;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="invoice">
-        <!-- HEADER: Logo + Company Info -->
+
+        <!-- Header -->
         <div class="header">
-            <img src="{{ url_for('static', filename='logo.jpg') }}" width="120">
-            <div>
+            <div class="company-info">
+                <img src="{{ url_for('static', filename='logo.jpg') }}" width="120"><br><br>
                 <h2>Classical Conversations</h2>
                 <p><strong>Director:</strong> {{ invoice.director_name }}</p>
                 <p><strong>Email:</strong> {{ invoice.director_email }}</p>
+            </div>
 
-                <p></p>
+            <div class="right">
+                <p><strong>Date:</strong> {{ invoice.date }}</p>
+                <p><strong>Month:</strong> {{ invoice.month }}</p>
             </div>
         </div>
 
-        <hr>
-
-        <!-- TITLE -->
         <h1>INVOICE</h1>
 
-        <hr>
-
-        <!-- INVOICE DETAILS -->
-        <div class="details">
-            <p><strong>Date:</strong> {{ invoice.date }}</p>
-            <p><strong>Student:</strong> {{ invoice.student_name }}</p>
+        <!-- Bill To Section -->
+        <div class="section">
+            <h3>Bill To</h3>
             <p><strong>Parent:</strong> {{ invoice.parent_name }}</p>
-            <p><strong>Tutor:</strong> {{ invoice.tutor_name}}</p>
-            <p><strong>Month:</strong> {{ invoice.month }}</p>
-            <p><strong>Application Fee:</strong> ${{ invoice.a_fee }}</p>
-            <p><strong>Supply Fee:</strong> ${{ invoice.s_fee }} </p>
-            <p><strong>Tuition Fee:</strong> ${{ invoice.t_fee}} </p>
-            <p><strong>Facility Fee:</strong> ${{ invoice.f_fee}}</p>
+            <p><strong>Student:</strong> {{ invoice.student_name }}</p>
+            <p><strong>Tutor:</strong> {{ invoice.tutor_name }}</p>
         </div>
 
+        <!-- Itemized Fees -->
+        <div class="section">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Amount ($)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Application Fee</td>
+                        <td>{{ invoice.a_fee }}</td>
+                    </tr>
+                    <tr>
+                        <td>Supply Fee</td>
+                        <td>{{ invoice.s_fee }}</td>
+                    </tr>
+                    <tr>
+                        <td>Tuition Fee</td>
+                        <td>{{ invoice.t_fee }}</td>
+                    </tr>
+                    <tr>
+                        <td>Facility Fee</td>
+                        <td>{{ invoice.f_fee }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Total -->
         <div class="total">
-            Total Due: ${{invoice.total}}
+            Total Due: ${{ invoice.total }}
         </div>
 
-        <!-- BUTTONS -->
+        <!-- Buttons -->
         <div class="buttons">
             <button onclick="window.print()">Print Invoice</button>
             <a href="/">Create Another</a>
             <a href="{{ url_for('menu') }}">Return to Menu</a>
         </div>
+
     </div>
 </body>
 </html>
-
-
