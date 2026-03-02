@@ -3,44 +3,90 @@
 <head>
     <title>Saved Invoices</title>
     <style>
-        body {
-            font-family: Arial;
-            background: #f4f6f9;
-            padding: 40px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-        }
-        th, td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
-            text-align: left;
-        }
-        th {
-            background: #2470ff;
-            color: white;
-        }
-        tr:hover {
-            background: #f1f1f1;
-        }
-        a {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background: #2470ff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-        }
+    body {
+        font-family: Arial;
+        background: #f4f6f9;
+        padding: 40px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+    }
+
+    th, td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+    }
+
+    th {
+        background: #2470ff;
+        color: white;
+    }
+
+    tr:hover {
+        background: #f1f1f1;
+    }
+
+    a {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 20px;
+        background: #2470ff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+
+    /* 🔹 NEW FILTER STYLES */
+
+    .filter-box {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .filter-box input,
+    .filter-box select {
+        padding: 10px;
+        margin-right: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+
+    .filter-box button {
+        padding: 10px 18px;
+        background: #2470ff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .filter-box button:hover {
+        background: #1a56cc;
+    }
+
+    .clear-btn {
+        background: #6c757d;
+        margin-left: 10px;
+    }
+
+    .clear-btn:hover {
+        background: #545b62;
+    }
     </style>
 </head>
 <body>
 
 <h1>Saved Invoices</h1>
 
-<form method="GET" style="margin-bottom: 20px;">
+<form method="GET" class="filter-box">
     
     <input type="text" name="search"
            placeholder="Search student"
@@ -77,7 +123,7 @@
     </select>
 
     <button type="submit">Apply</button>
-    <a href="{{ url_for('invoices') }}">Clear</a>
+    <a href="{{ url_for('invoices') }}" class="clear-btn">Clear</a>
 
 </form>
 
