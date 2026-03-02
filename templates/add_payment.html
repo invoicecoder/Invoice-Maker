@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Payment</title>
+    <style>
+        body { font-family: Arial; background: #f4f6f9; padding: 40px; }
+        .form-container {
+            background: white; padding: 30px; max-width: 500px; margin: auto;
+            border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        input, button { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #ccc; }
+        button { background: #28a745; color: white; border: none; cursor: pointer; }
+        button:hover { background: #218838; }
+        a { display: block; text-align: center; margin-top: 15px; color: #007BFF; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Add Payment for {{ invoice.student_name }}</h2>
+        <form method="POST">
+            <label>Date:</label>
+            <input type="date" name="payment_date" required>
+
+            <label>Amount:</label>
+            <input type="number" name="amount" step="0.01" placeholder="Amount" required>
+
+            <label>Description:</label>
+            <input type="text" name="description" placeholder="Description">
+
+            <button type="submit">Submit Payment</button>
+        </form>
+        <a href="{{ url_for('invoices') }}">Back to Invoices</a>
+    </div>
+</body>
+</html>
