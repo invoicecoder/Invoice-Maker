@@ -400,7 +400,9 @@ def show_invoices(invoice_id):
 
     payment_subtotal = sum(payment.amount for payment in invoice.payments) if invoice.payments else 0
 
-    return render_template('invoice.html', invoice=invoice, payment_subtotal=payment_subtotal)
+    remaining_balance = invoice.total - payment_subtotal
+
+    return render_template('invoice.html', invoice=invoice, payment_subtotal=payment_subtotal, remaining_balance=remaining_balance)
 
 
 @app.route('/invoices')
@@ -459,6 +461,7 @@ with app.app_context():
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
