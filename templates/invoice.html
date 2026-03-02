@@ -114,6 +114,7 @@
                 <h2>Classical Conversations</h2>
                 <p><strong>Director:</strong> {{ invoice.director_name }}</p>
                 <p><strong>Email:</strong> {{ invoice.director_email }}</p>
+                <p><strong>Tutor:</strong> {{invoice.tutor_name }}</p>
             </div>
 
             <div class="right">
@@ -129,7 +130,6 @@
             <h3>Bill To</h3>
             <p><strong>Parent:</strong> {{ invoice.parent_name }}</p>
             <p><strong>Student:</strong> {{ invoice.student_name }}</p>
-            <p><strong>Tutor:</strong> {{ invoice.tutor_name }}</p>
         </div>
 
         <!-- Itemized Fees -->
@@ -138,25 +138,25 @@
                 <thead>
                     <tr>
                         <th>Description</th>
-                        <th>Amount ($)</th>
+                        <th>Amount</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>Application Fee</td>
-                        <td>{{ invoice.a_fee }}</td>
+                        <td>${{ invoice.a_fee }}</td>
                     </tr>
                     <tr>
                         <td>Supply Fee</td>
-                        <td>{{ invoice.s_fee }}</td>
+                        <td>${{ invoice.s_fee }}</td>
                     </tr>
                     <tr>
                         <td>Tuition Fee</td>
-                        <td>{{ invoice.t_fee }}</td>
+                        <td>${{ invoice.t_fee }}</td>
                     </tr>
                     <tr>
                         <td>Facility Fee</td>
-                        <td>{{ invoice.f_fee }}</td>
+                        <td>${{ invoice.f_fee }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -177,3 +177,4 @@
     </div>
 </body>
 </html>
+
