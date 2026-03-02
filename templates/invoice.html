@@ -196,7 +196,7 @@
     </div>
 {% endif %}
         <div class="total">
-            Remaining Balance: ${{ "{:,.2f}".format(invoice.total - payment_subtotal) }}
+            Remaining Balance: ${{ "{:,.2f}".format(remaining_balance) }}
         </div>
             <!-- Buttons -->
         <div class="buttons">
@@ -208,6 +208,7 @@
     </div>
 </body>
 </html>
+
 
 
 
