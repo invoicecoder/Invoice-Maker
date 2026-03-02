@@ -169,7 +169,6 @@
         <td>{{ invoice.s_fee }}</td>
         <td>{{ invoice.t_fee }}</td>
         <td>{{ invoice.a_fee }}</td>
-        <td>${{ "{:,.2f}".format(inv["remaining"]) }}</td>
         <td>
             <a href="{{ url_for('show_invoices', invoice_id=invoice.id) }}"> View Invoice </a>
         </td>
