@@ -40,6 +40,47 @@
 
 <h1>Saved Invoices</h1>
 
+<form method="GET" style="margin-bottom: 20px;">
+    
+    <input type="text" name="search"
+           placeholder="Search student"
+           value="{{ request.args.get('search', '') }}">
+
+    <input type="text" name="month"
+           placeholder="Month"
+           value="{{ request.args.get('month', '') }}">
+
+    <input type="text" name="tutor"
+           placeholder="Tutor"
+           value="{{ request.args.get('tutor', '') }}">
+
+    <select name="sort">
+        <option value="newest"
+            {% if request.args.get('sort') == 'newest' %}selected{% endif %}>
+            Newest
+        </option>
+
+        <option value="oldest"
+            {% if request.args.get('sort') == 'oldest' %}selected{% endif %}>
+            Oldest
+        </option>
+
+        <option value="highest"
+            {% if request.args.get('sort') == 'highest' %}selected{% endif %}>
+            Highest Total
+        </option>
+
+        <option value="lowest"
+            {% if request.args.get('sort') == 'lowest' %}selected{% endif %}>
+            Lowest Total
+        </option>
+    </select>
+
+    <button type="submit">Apply</button>
+    <a href="{{ url_for('invoices') }}">Clear</a>
+
+</form>
+
 <table>
     <tr>
         <th>Date</th>
