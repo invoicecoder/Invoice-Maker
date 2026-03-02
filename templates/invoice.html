@@ -178,14 +178,12 @@
                 </tr>
             </thead>
             <tbody>
-                {% set payment_subtotal = 0 %}
                 {% for p in invoice.payments %}
                 <tr>
                     <td>{{ p.date }}</td>
                     <td>{{ p.description }}</td>
                     <td>- ${{ "{:,.2f}".format(p.amount) }}</td>
                 </tr>
-                {% set payment_subtotal = payment_subtotal + p.amount %}
                 {% endfor %}
             </tbody>
             <tfoot>
@@ -210,5 +208,6 @@
     </div>
 </body>
 </html>
+
 
 
