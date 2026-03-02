@@ -62,6 +62,12 @@ class Invoice(db.Model):
     total = db.Column(db.Integer)
 
     date = db.Column(db.String(20))
+    payments = db.relationship(
+        'Payment',
+        backref='invoice',
+        lazy=True,
+        cascade='all, delete-orphan'
+    )
 class Payment(db.Model):
     __tablename__ = 'payments'
     
@@ -469,6 +475,7 @@ with app.app_context():
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
