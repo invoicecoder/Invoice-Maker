@@ -130,7 +130,7 @@ def add_payment_form(invoice_id):
         return "Access denied", 403
 
     if request.method == 'POST':
-        payment_date = request.form('payment_date', datetime.now().strftime("%Y-%m-%d"))
+        payment_date = request.form.get('payment_date', datetime.now().strftime("%Y-%m-%d"))
         amount = Decimal(request.form['amount'])
         description = request.form.get('description', '')
 
@@ -488,6 +488,7 @@ with app.app_context():
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
