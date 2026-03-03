@@ -21,6 +21,9 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     "pool_recycle": 1800,
 }
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+from flask_wtf import CSRFProtect
+
+csrf = CSRFProtect(app)
 
 db = SQLAlchemy(app)
 
@@ -478,6 +481,7 @@ with app.app_context():
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
