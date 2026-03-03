@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from datetime import datetime, timedelta
 import random
+from decimal import Decimal
 from flask_wtf import CSRFProtect
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -347,10 +348,10 @@ def index():
         director_name = request.form['director_name']
         director_email = request.form['director_email']
         month = request.form['month']
-        a_fee = int(request.form.get('a_fee', 0) or 0)
-        s_fee = int(request.form.get('s_fee', 0) or 0)
-        f_fee = int(request.form.get('f_fee', 0) or 0)
-        t_fee = int(request.form.get('t_fee', 0) or 0)
+        a_fee = Decimal(request.form.get('a_fee', 0) or 0)
+        s_fee = Decimal(request.form.get('s_fee', 0) or 0)
+        f_fee = Decimal(request.form.get('f_fee', 0) or 0)
+        t_fee = Decimal(request.form.get('t_fee', 0) or 0)
 
         total = a_fee + s_fee + f_fee + t_fee
         date = datetime.now().strftime("%Y-%m-%d")
@@ -487,6 +488,7 @@ with app.app_context():
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
