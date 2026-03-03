@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from datetime import datetime, timedelta
 import random
+from flask_wtf import CSRFProtect
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
@@ -20,8 +21,13 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     "pool_timeout": 30,
     "pool_recycle": 1800,
 }
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,   # JS cannot access cookies
+    SESSION_COOKIE_SECURE=True,     # Only sent over HTTPS
+    SESSION_COOKIE_SAMESITE='Lax'   # Helps prevent CSRF via cross-site requests
+)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-from flask_wtf import CSRFProtect
+
 
 csrf = CSRFProtect(app)
 
@@ -481,6 +487,7 @@ with app.app_context():
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
