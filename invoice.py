@@ -71,7 +71,7 @@ class Invoice(db.Model):
     t_fee = db.Column(db.Integer)
     total = db.Column(db.Integer)
 
-    date = db.Column(db.String(20))
+    date = db.Column(db.DateTime, default=datetime.utcnow)
     payments = db.relationship(
         'Payment',
         back_populates='invoice',
@@ -83,7 +83,7 @@ class Payment(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     invoice_id = db.Column(db.Integer, db.ForeignKey('invoices.id'), nullable=False)
-    date = db.Column(db.String(20), nullable=False)
+    date = db.Column(db.DateTime, default=datetime.utcnow)
     amount = db.Column(db.Float, nullable=False)
     description = db.Column(db.String(200))
 
@@ -130,8 +130,9 @@ def add_payment_form(invoice_id):
         return "Access denied", 403
 
     if request.method == 'POST':
-        payment_date = request.form['payment_date']
-        amount = Decima(request.form['amount'])
+        payment_date_str = request.form['payment_date']
+        payment_date = datetime.strptime(payment_date_str, "%Y-%m-%d")
+        amount = Decimal(request.form['amount'])
         description = request.form.get('description', '')
 
         new_payment = Payment(
@@ -488,6 +489,7 @@ with app.app_context():
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
