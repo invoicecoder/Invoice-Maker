@@ -84,7 +84,7 @@
 
         <!-- Form -->
         <form method="POST">
-            {{ csrf_token() }}
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <label for="student_name">Student Name:</label>
             <input type="text" id="student_name" name="student_name" required>
 
@@ -123,6 +123,7 @@
     </div>
 </body>
 </html>
+
 
 
 
