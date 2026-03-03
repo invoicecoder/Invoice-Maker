@@ -57,7 +57,7 @@
                         <form method="POST" 
                             action="{{ url_for('delete_invoice', invoice_id=invoice.id) }}"
                             onsubmit="return confirm('Are you sure you want to delete this invoice?');">
-                            {{ csrf_token() }}
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <button type="submit" style="
                                 background: #e74c3c;
                                 color: white;
