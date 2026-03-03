@@ -257,7 +257,6 @@ def delete_invoice(invoice_id):
 
 
 @app.route('/register', methods=['GET', 'POST'])
-@login_required
 def register():
 
 
@@ -488,6 +487,7 @@ with app.app_context():
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
