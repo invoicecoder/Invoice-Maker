@@ -96,6 +96,7 @@
         <!-- Change Username -->
         <h3>Change Username</h3>
         <form method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <input type="text" name="new_username" placeholder="New Username" required>
             <button type="submit">Update Username</button>
         </form>
@@ -105,6 +106,7 @@
         <!-- Change Password -->
         <h3>Change Password</h3>
         <form method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <input type="password" name="current_password" placeholder="Current Password" required>
             <input type="password" name="new_password" placeholder="New Password" required>
             <input type="password" name="confirm_password" placeholder="Confirm New Password" required>
