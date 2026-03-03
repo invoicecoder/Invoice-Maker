@@ -131,7 +131,7 @@ def add_payment_form(invoice_id):
 
     if request.method == 'POST':
         payment_date = request.form['payment_date']
-        amount = float(request.form['amount'])
+        amount = Decima(request.form['amount'])
         description = request.form.get('description', '')
 
         new_payment = Payment(
@@ -488,6 +488,7 @@ with app.app_context():
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
