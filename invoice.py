@@ -118,6 +118,38 @@ def login_required(f):
             return redirect(url_for('login'))
         return f(*args, **kwargs)
     return decorated_function
+@app.route('/invoice/<int:invoice_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_invoice(invoice_id):
+    invoice = Invoice.query.get_or_404(invoice_id)
+    user = User.query.get(session['user_id'])
+
+    # Only allow admin OR owner
+    if not user.is_admin and invoice.user_id != user.id:
+        return "Access denied", 403
+
+    if request.method == 'POST':
+        # Grab form data
+        invoice.student_name = request.form['student_name']
+        invoice.parent_name = request.form['parent_name']
+        invoice.tutor_name = request.form['tutor_name']
+        invoice.director_name = request.form['director_name']
+        invoice.director_email = request.form['director_email']
+        invoice.month = request.form['month']
+        
+        # Fees (use Decimal for safety)
+        invoice.a_fee = Decimal(request.form.get('a_fee', 0) or 0)
+        invoice.s_fee = Decimal(request.form.get('s_fee', 0) or 0)
+        invoice.f_fee = Decimal(request.form.get('f_fee', 0) or 0)
+        invoice.t_fee = Decimal(request.form.get('t_fee', 0) or 0)
+
+        # Recalculate total
+        invoice.total = invoice.a_fee + invoice.s_fee + invoice.f_fee + invoice.t_fee
+
+        db.session.commit()
+        return redirect(url_for('show_invoices', invoice_id=invoice.id))
+
+    return render_template('edit_invoice.html', invoice=invoice)
 
 @app.route('/invoice/<int:invoice_id>/add_payment', methods=['GET', 'POST'])
 @login_required
@@ -487,6 +519,7 @@ with app.app_context():
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
