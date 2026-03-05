@@ -172,6 +172,7 @@
         <th>Edit</th>
         <th>Delete</th>
         <th>Add Payment</th>
+        <th>View Payments</th>
     </tr>
 
     {% for inv in invoices %}
@@ -207,6 +208,10 @@
         <td>
             <a href="{{ url_for('add_payment_form', invoice_id=inv.invoice.id) }}" 
                class="action-btn add-payment-btn" style="background:#28a745;">Add Payment</a>
+        </td>
+        <td>
+            <a href="{{ url_for('view_payments', invoice_id=inv.invoice.id) }}"
+               class="action-btn edit-btn">View Payments</a>
         </td>
     </tr>
     {% endfor %}
