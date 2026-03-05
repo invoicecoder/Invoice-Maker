@@ -528,7 +528,44 @@ def invoices():
         })
 
     return render_template('saved_invoices.html', invoices=invoices_with_remaining)
+@app.route('/payment/<int:payment_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_payment(payment_id):
 
+    payment = Payment.query.get_or_404(payment_id)
+    invoice = payment.invoice
+    user = User.query.get(session['user_id'])
+
+    # Only admin or invoice owner
+    if not user.is_admin and invoice.user_id != user.id:
+        return "Access denied", 403
+
+    if request.method == 'POST':
+        payment.date = request.form['payment_date']
+        payment.amount = Decimal(request.form['amount'])
+        payment.description = request.form.get('description', '')
+
+        db.session.commit()
+
+        return redirect(url_for('view_payments', invoice_id=invoice.id))
+
+    return render_template('edit_payment.html', payment=payment)
+@app.route('/payment/<int:payment_id>/delete', methods=['POST'])
+@login_required
+def delete_payment(payment_id):
+
+    payment = Payment.query.get_or_404(payment_id)
+    invoice = payment.invoice
+    user = User.query.get(session['user_id'])
+
+    # Only admin or owner
+    if not user.is_admin and invoice.user_id != user.id:
+        return "Access denied", 403
+
+    db.session.delete(payment)
+    db.session.commit()
+
+    return redirect(url_for('view_payments', invoice_id=invoice.id))
 with app.app_context():
     db.create_all()
     admin = User.query.filter_by(username="admin").first()
@@ -541,6 +578,7 @@ with app.app_context():
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
