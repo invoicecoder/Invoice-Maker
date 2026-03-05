@@ -150,7 +150,29 @@ def edit_invoice(invoice_id):
         return redirect(url_for('show_invoices', invoice_id=invoice.id))
 
     return render_template('edit_invoice.html', invoice=invoice)
+@app.route('/invoice/<int:invoice_id>/payments')
+@login_required
+def view_payments(invoice_id):
 
+    invoice = Invoice.query.get_or_404(invoice_id)
+    user = User.query.get(session['user_id'])
+
+    # Allow admin OR owner
+    if not user.is_admin and invoice.user_id != user.id:
+        return "Access denied", 403
+
+    payments = invoice.payments
+
+    payment_total = sum(p.amount for p in payments)
+    remaining = invoice.total - payment_total
+
+    return render_template(
+        'payments.html',
+        invoice=invoice,
+        payments=payments,
+        payment_total=payment_total,
+        remaining=remaining
+    )
 @app.route('/invoice/<int:invoice_id>/add_payment', methods=['GET', 'POST'])
 @login_required
 def add_payment_form(invoice_id):
@@ -519,6 +541,7 @@ with app.app_context():
 
     db.session.add(admin)
     db.session.commit()
+
 
 
 
