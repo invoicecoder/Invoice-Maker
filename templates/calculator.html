@@ -57,6 +57,12 @@
                     <li>{{ k }}: ${{ v }}</li>
                 {% endfor %}
             </ul>
+            <ul>
+                <li>Application Fee:${{ a_total }}</li>
+                <li>Supply Fee:${{ s_total }}</li>
+                <li>Tuition Fee:${{ t_total }}</li>
+                <li>Facility Fee:${{ f_total }}</li>
+            </ul>
             <h3>Total: ${{ total }}</h3>
         </div>
     {% endif %}
