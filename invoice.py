@@ -566,6 +566,57 @@ def delete_payment(payment_id):
     db.session.commit()
 
     return redirect(url_for('view_payments', invoice_id=invoice.id))
+@app.route('/calculator', methods=['GET', 'POST'])
+@login_required
+def calculator():
+    breakdown = {}
+    total = 0
+
+    if request.method == 'POST':
+        child_type = request.form.get('child_type')  # 'first' or 'sibling'
+        foundations = request.form.get('foundations') == 'yes'
+        essentials = request.form.get('essentials') == 'yes'
+        challenge = request.form.get('challenge') == 'yes'
+        facility_input = request.form.get('facility', 0)
+
+        # Convert facility to Decimal
+        facility_fee = Decimal(facility_input or 0)
+
+        # ----- Foundations Fees -----
+        if foundations:
+            if child_type == 'first':
+                breakdown['Foundations Application'] = 150
+                breakdown['Foundations Supply'] = 70
+                breakdown['Foundations Tuition'] = 395
+            else:
+                breakdown['Foundations Application'] = 25
+                breakdown['Foundations Supply'] = 70
+                breakdown['Foundations Tuition'] = 395
+            breakdown['Foundations Facility'] = facility_fee
+
+        # ----- Essentials Fees -----
+        if essentials and foundations:
+            if child_type == 'first':
+                breakdown['Essentials Application'] = 150
+                breakdown['Essentials Supply'] = 40
+                breakdown['Essentials Tuition'] = 395
+            else:
+                breakdown['Essentials Application'] = 25
+                breakdown['Essentials Supply'] = 40
+                breakdown['Essentials Tuition'] = 395
+            breakdown['Essentials Facility'] = facility_fee
+
+        # ----- Challenge Fees -----
+        if challenge:
+            breakdown['Challenge Application'] = 150
+            breakdown['Challenge Supply'] = 85
+            breakdown['Challenge Tuition'] = 1430
+            breakdown['Challenge Facility'] = facility_fee
+
+        # Calculate total
+        total = sum(breakdown.values())
+
+    return render_template('calculator.html', breakdown=breakdown, total=total)
 with app.app_context():
     db.create_all()
     admin = User.query.filter_by(username="admin").first()
