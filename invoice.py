@@ -588,11 +588,18 @@ def calculator():
                 breakdown['Foundations Application'] = 150
                 breakdown['Foundations Supply'] = 70
                 breakdown['Foundations Tuition'] = 395
+                breakdown['Foundations Facility'] = facility_fee
+                a_total += breakdown['Foundations Application']
+                s_total += breakdown['Foundations Supply']
+                t_total += breakdown['Foundations Tuition']
+                f_total += breakdown['Foundations Facility']
             else:
                 breakdown['Foundations Application'] = 25
                 breakdown['Foundations Supply'] = 70
                 breakdown['Foundations Tuition'] = 395
-            breakdown['Foundations Facility'] = facility_fee
+                a_total += breakdown['Foundations Application']
+                s_total += breakdown['Foundations Supply']
+                t_total += breakdown['Foundations Tuition']
 
         # ----- Essentials Fees -----
         if essentials and foundations:
@@ -600,23 +607,42 @@ def calculator():
                 breakdown['Essentials Application'] = 150
                 breakdown['Essentials Supply'] = 40
                 breakdown['Essentials Tuition'] = 395
+                a_total += breakdown['Essentials Application']
+                s_total += breakdown['Essentials Supply']
+                t_total += breakdown['Essentials Tuition']
             else:
                 breakdown['Essentials Application'] = 25
                 breakdown['Essentials Supply'] = 40
                 breakdown['Essentials Tuition'] = 395
-            breakdown['Essentials Facility'] = facility_fee
+                a_total += breakdown['Essentials Application']
+                s_total += breakdown['Essentials Supply']
+                t_total += breakdown['Essentials Tuition']
 
         # ----- Challenge Fees -----
         if challenge:
-            breakdown['Challenge Application'] = 150
-            breakdown['Challenge Supply'] = 85
-            breakdown['Challenge Tuition'] = 1430
-            breakdown['Challenge Facility'] = facility_fee
+            if child_type == 'first':
+                breakdown['Challenge Application'] = 150
+                breakdown['Challenge Supply'] = 85
+                breakdown['Challenge Tuition'] = 1430
+                breakdown['Challenge Facility'] = facility_fee
+                a_total += breakdown['Challenge Application']
+                s_total += breakdown['Challenge Supply']
+                t_total += breakdown['Challenge Tuition']
+                facility += breakdown['Challenge Facility']
+            else:
+                breakdown['Challenge Application'] = 150
+                breakdown['Challenge Supply'] = 85
+                breakdown['Challenge Tuition'] = 1430
+                a_total += breakdown['Challenge Application']
+                s_total += breakdown['Challenge Supply']
+                t_total += breakdown['Challenge Tuition']
+                
 
         # Calculate total
         total = sum(breakdown.values())
+        
 
-    return render_template('calculator.html', breakdown=breakdown, total=total)
+    return render_template('calculator.html', breakdown=breakdown, total=total, a_total=a_total, s_total=s_total, t_total=t_total, f_total=f_total)
 with app.app_context():
     db.create_all()
     admin = User.query.filter_by(username="admin").first()
