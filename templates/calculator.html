@@ -18,6 +18,7 @@
     <h1>Student Costs Calculator</h1>
 
     <form method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <p>Is this the first child or a sibling?</p>
         <select name="child_type" required>
             <option value="first">First Child</option>
