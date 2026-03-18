@@ -592,7 +592,7 @@ def calculator():
                 breakdown['Foundations Application'] = 150
                 breakdown['Foundations Supply'] = 70
                 breakdown['Foundations Tuition'] = 395
-                breakdown['Foundations Facility'] = facility_fee
+                breakdown['Facility'] = facility_fee
                 a_total += 150
                 s_total += 70
                 t_total += 395
@@ -628,7 +628,7 @@ def calculator():
                 breakdown['Challenge Application'] = 150
                 breakdown['Challenge Supply'] = 85
                 breakdown['Challenge Tuition'] = 1430
-                breakdown['Challenge Facility'] = facility_fee
+                breakdown['Facility'] = facility_fee
                 a_total += 150
                 s_total += 85
                 t_total += 1430
