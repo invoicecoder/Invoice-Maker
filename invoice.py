@@ -571,10 +571,10 @@ def delete_payment(payment_id):
 def calculator():
     breakdown = {}
     total = 0
-    a_fee = 0
-    s_fee = 0
-    t_fee = 0
-    f_fee = 0
+    a_total = 0
+    s_total = 0
+    t_total = 0
+    f_total = 0
 
     if request.method == 'POST':
         child_type = request.form.get('child_type')  # 'first' or 'sibling'
