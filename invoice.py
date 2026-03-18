@@ -632,7 +632,7 @@ def calculator():
                 a_total += 150
                 s_total += 85
                 t_total += 1430
-                facility += facility_fee
+                f_total += facility_fee
             else:
                 breakdown['Challenge Application'] = 150
                 breakdown['Challenge Supply'] = 85
