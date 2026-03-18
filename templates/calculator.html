@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Costs Calculator</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; padding: 40px; background: #f4f6f9; color: #333; }
+        h1 { color: #2470ff; margin-bottom: 20px; }
+        form { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 6px 15px rgba(0,0,0,0.08); max-width: 500px; }
+        label, p { display: block; margin-top: 15px; font-weight: bold; }
+        select, input { width: 100%; padding: 8px; margin-top: 5px; border-radius: 6px; border: 1px solid #ccc; }
+        button { margin-top: 20px; padding: 10px 20px; background: #2470ff; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+        button:hover { background: #1458c8; }
+        .result { margin-top: 30px; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
+    </style>
+</head>
+<body>
+    <h1>Student Costs Calculator</h1>
+
+    <form method="POST">
+        <p>Is this the first child or a sibling?</p>
+        <select name="child_type" required>
+            <option value="first">First Child</option>
+            <option value="sibling">Sibling</option>
+        </select>
+
+        <p>Is the student in Foundations?</p>
+        <select name="foundations">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+        </select>
+
+        <p>Is the student also in Essentials?</p>
+        <select name="essentials">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+        </select>
+
+        <p>Is the student in Challenge?</p>
+        <select name="challenge">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+        </select>
+
+        <p>Facility Fee (if various, enter amount):</p>
+        <input type="number" step="0.01" name="facility" placeholder="0">
+
+        <button type="submit">Calculate</button>
+    </form>
+
+    {% if breakdown %}
+        <div class="result">
+            <h2>Fee Breakdown</h2>
+            <ul>
+                {% for k, v in breakdown.items() %}
+                    <li>{{ k }}: ${{ v }}</li>
+                {% endfor %}
+            </ul>
+            <h3>Total: ${{ total }}</h3>
+        </div>
+    {% endif %}
+
+    <br>
+    <a href="{{ url_for('menu') }}">Back to Dashboard</a>
+</body>
+</html>
