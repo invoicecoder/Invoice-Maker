@@ -593,17 +593,17 @@ def calculator():
                 breakdown['Foundations Supply'] = 70
                 breakdown['Foundations Tuition'] = 395
                 breakdown['Foundations Facility'] = facility_fee
-                a_total += breakdown['Foundations Application']
-                s_total += breakdown['Foundations Supply']
-                t_total += breakdown['Foundations Tuition']
-                f_total += breakdown['Foundations Facility']
+                a_total += 150
+                s_total += 70
+                t_total += 395
+                f_total += facility_fee
             else:
                 breakdown['Foundations Application'] = 25
                 breakdown['Foundations Supply'] = 70
                 breakdown['Foundations Tuition'] = 395
-                a_total += breakdown['Foundations Application']
-                s_total += breakdown['Foundations Supply']
-                t_total += breakdown['Foundations Tuition']
+                a_total += 25
+                s_total += 70
+                t_total += 395
 
         # ----- Essentials Fees -----
         if essentials and foundations:
@@ -611,16 +611,16 @@ def calculator():
                 breakdown['Essentials Application'] = 150
                 breakdown['Essentials Supply'] = 40
                 breakdown['Essentials Tuition'] = 395
-                a_total += breakdown['Essentials Application']
-                s_total += breakdown['Essentials Supply']
-                t_total += breakdown['Essentials Tuition']
+                a_total += 150
+                s_total += 40
+                t_total += 395
             else:
                 breakdown['Essentials Application'] = 25
                 breakdown['Essentials Supply'] = 40
                 breakdown['Essentials Tuition'] = 395
-                a_total += breakdown['Essentials Application']
-                s_total += breakdown['Essentials Supply']
-                t_total += breakdown['Essentials Tuition']
+                a_total += 25
+                s_total += 40
+                t_total += 395
 
         # ----- Challenge Fees -----
         if challenge:
@@ -629,17 +629,17 @@ def calculator():
                 breakdown['Challenge Supply'] = 85
                 breakdown['Challenge Tuition'] = 1430
                 breakdown['Challenge Facility'] = facility_fee
-                a_total += breakdown['Challenge Application']
-                s_total += breakdown['Challenge Supply']
-                t_total += breakdown['Challenge Tuition']
-                facility += breakdown['Challenge Facility']
+                a_total += 150
+                s_total += 85
+                t_total += 1430
+                facility += facility_fee
             else:
                 breakdown['Challenge Application'] = 150
                 breakdown['Challenge Supply'] = 85
                 breakdown['Challenge Tuition'] = 1430
-                a_total += breakdown['Challenge Application']
-                s_total += breakdown['Challenge Supply']
-                t_total += breakdown['Challenge Tuition']
+                a_total += 150
+                s_total += 85
+                t_total += 1430
                 
 
         # Calculate total
